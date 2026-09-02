@@ -871,7 +871,7 @@ canvas#weightChart {
         <span id="lblWorkoutDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/6 完成</span>
       </div>
       <div id="exerciseList"></div>
-      <!-- 训练动作专属快捷按钮（力量只显组间，间歇只显单车，稳态有氧不显） -->
+      <!-- 专属快捷动作按钮（力量只显组间，间歇只显单车，稳态有氧和休息日不显） -->
       <div class="training-action-row" id="trainingActionRow"></div>
     </section>
 
@@ -1123,14 +1123,15 @@ const MEALS_DB = {
   }
 };
 
+/* 周计划安排：周三设为周中休息日，周日转为单车稳态有氧（3天训练+1天休息+3天训练循环） */
 const WEEK_PLAN = [
   { day: "周一", type: "s", title: "下肢力量 A" },
   { day: "周二", type: "c", title: "动感单车 · 稳定" },
-  { day: "周三", type: "s", title: "上肢力量 B" },
-  { day: "周四", type: "c", title: "动感单车 · 间歇" },
-  { day: "周五", type: "c", title: "动感单车 · 稳定" },
+  { day: "周三", type: "r", title: "休息日：散步 20-30 分钟 + 全身拉伸" },
+  { day: "周四", type: "s", title: "上肢力量 B" },
+  { day: "周五", type: "c", title: "动感单车 · 间歇" },
   { day: "周六", type: "c", title: "动感单车 · 稳定" },
-  { day: "周日", type: "r", title: "休息日：散步 20-30 分钟 + 全身拉伸" }
+  { day: "周日", type: "c", title: "动感单车 · 稳定" }
 ];
 
 /* ================== 状态管理 ================== */
@@ -1366,8 +1367,8 @@ function renderTraining(dateStr, cycle, dayLog) {
     document.getElementById("lblWorkoutTitle").textContent = plan.title;
     document.getElementById("lblWorkoutDoneBadge").textContent = "全身放松";
     listEl.innerHTML = `
-      <div style="background:var(--accent-green-bg); color:var(--accent-green); padding:12px; border-radius:12px; font-size:13.5px;">
-        🌿 <strong>今日完全休息：</strong> 建议户外快步散步 20-30 分钟 + 全身柔韧拉伸，帮助肌肉超量恢复！
+      <div style="background:var(--accent-green-bg); color:var(--accent-green); padding:12px; border-radius:12px; font-size:13.5px; line-height:1.6;">
+        🌿 <strong>今日周中休息日：</strong> 建议户外快步散步 20-30 分钟 + 全身柔韧拉伸，充分缓解上半周疲劳，帮助肌肉超量恢复！
       </div>
     `;
     if (actionRow) actionRow.innerHTML = "";
