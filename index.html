@@ -431,34 +431,11 @@ body {
 }
 
 /* 三餐打卡 */
-.meal-type-nav {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.meal-tab-btn {
-  flex: 1;
-  padding: 6px;
-  border-radius: 8px;
-  border: 1px solid var(--card-border);
-  background: #FFF;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-sub);
-  cursor: pointer;
-  user-select: none;
-}
-.meal-tab-btn.active {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border-color: #FDC7C7;
-}
-
 .meal-block {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #F5EFEB;
 }
 .meal-block:last-child { border-bottom: none; }
@@ -466,10 +443,36 @@ body {
 .meal-title-line {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  font-weight: 700;
+  align-items: baseline;
+  font-size: 14.5px;
+  font-weight: 750;
+  color: var(--text-main);
 }
-.meal-content-text { font-size: 13px; color: var(--text-main); margin-top: 3px; line-height: 1.45; }
+.meal-dish-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+.meal-content-text {
+  font-size: 13.5px;
+  color: #3F3730;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.meal-content-text strong {
+  color: #E11D48;
+  font-weight: 800;
+}
+.meal-helper-box {
+  margin-top: 12px;
+  background: #FFFDF8;
+  border: 1px solid #F7EBDC;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
 
 /* 计时器模块 (Tab 2) */
 .timer-container {
@@ -814,7 +817,7 @@ canvas#weightChart {
     <div class="weight-row">
       <div class="weight-title">
         <span>⚖️ 晨重联动</span>
-        <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(自动联动营养素)</span>
+        <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(自动联动营养素与食谱克数)</span>
       </div>
       <div class="weight-input-group">
         <button class="step-btn" id="btnWeightMinus">-</button>
@@ -875,19 +878,22 @@ canvas#weightChart {
       <div class="training-action-row" id="trainingActionRow"></div>
     </section>
 
-    <!-- 三餐打卡 -->
+    <!-- 今日营养三餐打卡 -->
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">🍱 今日三餐打卡 <span class="card-subtitle" id="lblMealDay">Day A</span></div>
-        <div class="meal-type-nav">
-          <button class="meal-tab-btn" data-mealday="Day A">Day A</button>
-          <button class="meal-tab-btn" data-mealday="Day B">Day B</button>
-          <button class="meal-tab-btn" data-mealday="Day C">Day C</button>
-        </div>
+        <div class="card-title">🍱 今日营养食谱 <span class="card-subtitle" id="lblMealTitle">周三 · 深海优质蛋白餐</span></div>
+        <span id="lblMealDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/4 完成</span>
       </div>
       <div id="mealList"></div>
-      <div style="font-size:12px; color:var(--text-muted); margin-top:10px; background:#FAF6F0; padding:8px 10px; border-radius:8px;">
-        💡 份量掌心口诀：米饭一拳（约130-140g）、肉类一掌（约130-150g）、蔬菜两拳（250g）、油脂一拇指（5g）。
+      
+      <!-- 掌心口诀与替换备忘提示 -->
+      <div class="meal-helper-box">
+        <div style="font-weight:750; color:var(--text-main); margin-bottom:4px; font-size:12px;">💡 食物克数已随今日体重与周期实时计算！</div>
+        <div style="font-size:11.5px; color:var(--text-sub); line-height:1.55;">
+          • <strong>主食</strong>：米饭一小拳（或燕麦4平汤匙、红薯/紫薯一拳）<br>
+          • <strong>肉类</strong>：去皮禽肉/鱼虾一掌心（或瘦牛肉扑克牌大）<br>
+          • <strong>蔬菜</strong>：深色蔬菜两拳（做熟约1.5-2碗，不限量）
+        </div>
       </div>
     </section>
 
@@ -1093,35 +1099,72 @@ const EXERCISES_DB = {
   ]
 };
 
-const MEALS_DB = {
-  "Day A": {
-    kcal: "约 1455 kcal", protein: "约 101g",
-    items: [
-      { type: "早餐", emoji: "🥣", text: "燕麦 45g（约4平勺）+ 鸡蛋 2 个 + 无糖豆浆 250ml" },
-      { type: "午餐", emoji: "🍚", text: "米饭 140g（约一小拳）+ 鸡胸肉 150g（约一掌）+ 西兰花 250g（约两拳）+ 油 5g" },
-      { type: "加餐", emoji: "🍎", text: "苹果 1 个（约一拳）+ 无糖酸奶 60g（约半杯）" },
-      { type: "晚餐", emoji: "🥗", text: "米饭 120g + 鱼/虾仁 150g + 豆腐 120g（约半盒）+ 绿叶菜 250g + 油 5g" }
+/* 7天营养食谱库（食物克数由 c:碳水, p:蛋白质, f:脂肪 实时动态计算） */
+const MEAL_RECIPES_7DAYS = [
+  {
+    theme: "周一 · 经典高纤能量餐",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥣", name: "无糖燕麦活力碗", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong>（约4平匙）+ 鸡蛋 <strong>2个</strong>（水煮/少油煎）+ 无糖豆浆 <strong>250ml</strong>` },
+      { type: "午餐", emoji: "🍚", name: "蒜香鸡胸能量饭", text: `米饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 香煎/蒸鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong>（约一掌）+ 西兰花 <strong>250g</strong> + 橄榄油 5g` },
+      { type: "加餐", emoji: "🍎", name: "低卡轻爽加餐", text: `脆苹果 <strong>1个</strong>（约一拳）+ 无糖浓稠酸奶 <strong>80g</strong>` },
+      { type: "晚餐", emoji: "🍤", name: "鲜虾时蔬豆腐煲", text: `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 白灼基围虾/虾仁 <strong>${Math.round(p * 1.43)}g</strong> + 嫩豆腐 <strong>120g</strong> + 绿叶菜 <strong>250g</strong> + 油 4g` }
     ]
   },
-  "Day B": {
-    kcal: "约 1445 kcal", protein: "约 96g",
-    items: [
-      { type: "早餐", emoji: "🍞", text: "全麦吐司 2 片（约手掌大）+ 鸡蛋 2 个 + 低脂牛奶 200ml" },
-      { type: "午餐", emoji: "🥩", text: "杂粮饭 140g（约一小拳）+ 瘦牛肉 120g（约扑克牌大）+ 彩椒/黄瓜 250g + 油 5g" },
-      { type: "加餐", emoji: "🍌", text: "香蕉 1 根（约一拳）+ 原味坚果 8g（约一小把）" },
-      { type: "晚餐", emoji: "🍠", text: "红薯 170g（约一拳）+ 去皮鸡腿肉 130g（约一掌）+ 大叶菜 250g + 油 4g" }
+  {
+    theme: "周二 · 鲜美黑椒牛肉餐",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🍞", name: "全麦滑蛋吐司", text: `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong>（约2片）+ 无油滑蛋 <strong>2个</strong> + 低脂牛奶 <strong>200ml</strong>` },
+      { type: "午餐", emoji: "🥩", name: "黑椒洋葱炒牛肉", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong>（约扑克牌大）+ 彩椒/黄瓜 <strong>250g</strong> + 油 5g` },
+      { type: "加餐", emoji: "🍌", name: "快充坚果加餐", text: `香蕉 <strong>1根</strong> + 原味混合坚果 <strong>${Math.round(f * 0.16)}g</strong>（约一小把）` },
+      { type: "晚餐", emoji: "🍠", name: "慢碳鸡腿时蔬餐", text: `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong>（约一拳）+ 去皮去骨鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 大叶菜/生菜 <strong>250g</strong> + 油 4g` }
     ]
   },
-  "Day C": {
-    kcal: "约 1370 kcal", protein: "约 95g",
-    items: [
-      { type: "早餐", emoji: "🥣", text: "燕麦 40g（约4平勺）+ 全蛋 1 个 + 蛋白 2 个 + 无糖酸奶 100g" },
-      { type: "午餐", emoji: "🐟", text: "米饭 130g（约小拳少一点）+ 三文鱼/鲈鱼 150g（约一掌）+ 芦笋/西葫芦 250g + 油 4g" },
-      { type: "加餐", emoji: "🫐", text: "蓝莓/草莓 150g（约一拳）+ 原味坚果 8g（约一小把）" },
-      { type: "晚餐", emoji: "🌽", text: "玉米 180g（约一根）+ 瘦猪肉/鸡胸 120g（约一掌）+ 菠菜 300g 蒜炒 + 豆腐 100g + 油 4g" }
+  {
+    theme: "周三 · 深海优质蛋白餐",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥣", name: "高蛋白燕麦酸奶杯", text: `无糖燕麦 <strong>${Math.round(c * 0.28)}g</strong> + 全蛋 <strong>1个</strong> + 蛋白 <strong>2个</strong> + 无糖酸奶 <strong>100g</strong>` },
+      { type: "午餐", emoji: "🐟", name: "清蒸鲈鱼/香煎三文鱼", text: `米饭 <strong>${Math.round(c * 0.90)}g</strong> + 鲈鱼排/三文鱼 <strong>${Math.round(p * 1.40)}g</strong>（约一掌）+ 芦笋/西葫芦 <strong>250g</strong> + 油 4g` },
+      { type: "加餐", emoji: "🫐", name: "抗氧莓果加餐", text: `新鲜蓝莓/草莓 <strong>150g</strong>（约一小碗）+ 原味坚果 <strong>8g</strong>` },
+      { type: "晚餐", emoji: "🌽", name: "金玉满堂时蔬豆腐", text: `蒸甜玉米 <strong>${Math.round(c * 1.25)}g</strong>（约1根）+ 瘦里脊肉/鸡胸 <strong>${Math.round(p * 1.15)}g</strong> + 蒜香菠菜 <strong>300g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
+    ]
+  },
+  {
+    theme: "周四 · 鲜美滑蛋虾仁面",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥯", name: "贝果双蛋晨光餐", text: `全麦贝果/面包 <strong>${Math.round(c * 0.48)}g</strong> + 煎鸡蛋 <strong>2个</strong> + 黑咖啡/无糖豆浆 <strong>250ml</strong>` },
+      { type: "午餐", emoji: "🍜", name: "滑蛋大虾仁荞麦面", text: `荞麦面干重 <strong>${Math.round(c * 0.48)}g</strong>（煮熟约140g）+ 鲜滑蛋炒大虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 黄瓜黑木耳 <strong>250g</strong> + 油 5g` },
+      { type: "加餐", emoji: "🍅", name: "清甜番茄酸奶", text: `多汁圣女果/小番茄 <strong>150g</strong> + 无糖酸奶 <strong>80g</strong>` },
+      { type: "晚餐", emoji: "🍠", name: "紫薯慢炖鸡肉煲", text: `紫薯/红薯 <strong>${Math.round(c * 1.18)}g</strong> + 卤/煎鸡胸肉 <strong>${Math.round(p * 1.35)}g</strong> + 口蘑炒西兰花 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
+    ]
+  },
+  {
+    theme: "周五 · 意式香草鸡肉餐",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥣", name: "奶香燕麦双蛋餐", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong> 煮低脂奶 <strong>200ml</strong> + 嫩蒸水蛋 <strong>2个</strong>` },
+      { type: "午餐", emoji: "🍚", name: "迷迭香煎鸡胸饭", text: `米饭 <strong>${Math.round(c * 0.95)}g</strong> + 香草煎鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong> + 蒜炒荷兰豆/口蘑 <strong>250g</strong> + 油 5g` },
+      { type: "加餐", emoji: "🥝", name: "VC奇异果坚果加餐", text: `奇异果/猕猴桃 <strong>1-2个</strong> + 原味巴旦木 <strong>8g</strong>` },
+      { type: "晚餐", emoji: "🐟", name: "清蒸龙利鱼轻食餐", text: `蒸土豆/玉米 <strong>${Math.round(c * 1.25)}g</strong> + 清蒸龙利鱼/巴沙鱼 <strong>${Math.round(p * 1.50)}g</strong> + 白灼芥蓝/菜心 <strong>250g</strong> + 油 4g` }
+    ]
+  },
+  {
+    theme: "周六 · 暖胃番茄炖牛肉",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥪", name: "芝士煎蛋全麦三明治", text: `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong> + 煎蛋 <strong>1个</strong> + 低脂芝士 <strong>1片</strong> + 无糖黑豆浆 <strong>250ml</strong>` },
+      { type: "午餐", emoji: "🥩", name: "浓郁番茄慢炖牛肉", text: `紫米/糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 番茄炖瘦牛肉 <strong>${Math.round(p * 1.15)}g</strong> + 炒西兰花胡萝卜 <strong>250g</strong> + 油 5g` },
+      { type: "加餐", emoji: "🍊", name: "甜橙轻酸奶加餐", text: `多汁甜橙 <strong>1个</strong> + 原味无糖酸奶 <strong>80g</strong>` },
+      { type: "晚餐", emoji: "🍲", name: "鲜虾豆腐上汤时蔬", text: `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 鲜虾仁炒豆腐 <strong>${Math.round(p * 1.30)}g</strong> + 上汤娃娃菜 <strong>250g</strong> + 油 4g` }
+    ]
+  },
+  {
+    theme: "周日 · 轻盈海鲜鲜蔬日",
+    calc: (c, p, f) => [
+      { type: "早餐", emoji: "🥣", name: "经典双蛋燕麦餐", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong> + 溏心蛋 <strong>2个</strong> + 无糖纯豆浆 <strong>250ml</strong>` },
+      { type: "午餐", emoji: "🦑", name: "白灼双鲜杂粮饭", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 白灼鱿鱼/鲜虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 蒜蓉炒菜心/芦笋 <strong>250g</strong> + 油 5g` },
+      { type: "加餐", emoji: "🫐", name: "蓝莓坚果能量包", text: `新鲜蓝莓 <strong>100g</strong> + 原味坚果 <strong>8g</strong>` },
+      { type: "晚餐", emoji: "🎃", name: "香甜板栗南瓜鸡腿", text: `蒸板栗南瓜/红薯 <strong>${Math.round(c * 1.20)}g</strong> + 嫩煎去皮鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 清炒时蔬 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
     ]
   }
-};
+];
 
 /* 周计划安排：周三设为周中休息日，周日转为单车稳态有氧（3天训练+1天休息+3天训练循环） */
 const WEEK_PLAN = [
@@ -1145,8 +1188,7 @@ let app = {
     periodBaseline: "2026-08-18",
     cycleLen: 28
   },
-  logs: {}, // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, notes: {} } }
-  activeMealDay: null
+  logs: {} // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, notes: {} } }
 };
 
 function loadLocalData() {
@@ -1301,8 +1343,8 @@ function renderAll() {
   // 5. 训练动作列表与专属间歇按钮联动
   renderTraining(curDate, cycle, dayLog);
 
-  // 6. 三餐列表
-  renderMeals(dayIdx, dayLog);
+  // 6. 三餐列表（随体重与宏量营养素实时联动克数）
+  renderMeals(dayIdx, dayLog, macros);
 
   // 7. 设置项反显
   document.getElementById("cfgHeight").value = app.config.height;
@@ -1425,10 +1467,7 @@ function renderTraining(dateStr, cycle, dayLog) {
     document.getElementById("lblWorkoutDoneBadge").style.color = "var(--text-muted)";
   }
 
-  // 专属快捷助手按钮联动：
-  // 1. 力量训练 (type === 's') -> 只显示力量组间休息计时器
-  // 2. 动感单车间歇 -> 只显示单车 HIIT 助手
-  // 3. 稳态有氧 / 休息日 -> 不显示计时器按钮
+  // 专属快捷助手按钮联动
   if (actionRow) {
     if (plan.type === "s") {
       actionRow.innerHTML = `
@@ -1454,23 +1493,24 @@ function renderTraining(dateStr, cycle, dayLog) {
   }
 }
 
-/* ================== 三餐打卡模块 ================== */
-function renderMeals(dayIdx, dayLog) {
-  const defaultMealDay = ["Day A", "Day B", "Day C"][dayIdx % 3];
-  const activeDay = app.activeMealDay || defaultMealDay;
-  document.getElementById("lblMealDay").textContent = activeDay;
+/* ================== 三餐打卡模块（纯当日智能食谱，动态计算克数） ================== */
+function renderMeals(dayIdx, dayLog, macros) {
+  const d = parseDate(app.currentDate);
+  const recipeIndex = (d.getDay() + 6) % 7; // 按星期周循环
+  const recipe = MEAL_RECIPES_7DAYS[recipeIndex];
 
-  // 切换三餐 Tab 按钮高亮
-  document.querySelectorAll(".meal-tab-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.mealday === activeDay);
-  });
+  document.getElementById("lblMealTitle").textContent = recipe.theme;
 
-  const mealData = MEALS_DB[activeDay];
+  const items = recipe.calc(macros.c, macros.p, macros.f);
   const listEl = document.getElementById("mealList");
   listEl.innerHTML = "";
 
-  mealData.items.forEach((item) => {
+  let doneCount = 0;
+
+  items.forEach((item) => {
     const isDone = !!(dayLog.meals && dayLog.meals[item.type]);
+    if (isDone) doneCount++;
+
     const block = document.createElement("div");
     block.className = "meal-block";
     block.innerHTML = `
@@ -1478,6 +1518,7 @@ function renderMeals(dayIdx, dayLog) {
       <div class="meal-info">
         <div class="meal-title-line">
           <span>${item.emoji} ${item.type}</span>
+          <span class="meal-dish-name">${item.name}</span>
         </div>
         <div class="meal-content-text">${item.text}</div>
       </div>
@@ -1488,11 +1529,17 @@ function renderMeals(dayIdx, dayLog) {
       dayLog.meals[item.type] = !dayLog.meals[item.type];
       saveLocalData();
       if (dayLog.meals[item.type]) playCheerTone();
-      renderMeals(dayIdx, dayLog);
+      renderMeals(dayIdx, dayLog, macros);
     };
 
     listEl.appendChild(block);
   });
+
+  const badge = document.getElementById("lblMealDoneBadge");
+  if (badge) {
+    badge.textContent = `${doneCount}/${items.length} 完成`;
+    badge.style.color = (doneCount === items.length && doneCount > 0) ? "var(--accent-green)" : "var(--text-muted)";
+  }
 }
 
 /* ================== 组间休息计时器 ================== */
@@ -1981,7 +2028,7 @@ function initEvents() {
     renderAll();
   };
 
-  // 体重步进与输入
+  // 体重步进与输入（直接联动营养素与所有食物克数）
   function onWeightChange(newVal, sync = true) {
     const w = Math.max(30, Math.min(150, newVal));
     app.weight = w;
@@ -2026,14 +2073,6 @@ function initEvents() {
     updateWater((dayLog.water || 0) + 250);
   };
   document.getElementById("btnResetWater").onclick = () => updateWater(0);
-
-  // 三餐 Tab
-  document.querySelectorAll(".meal-tab-btn").forEach(btn => {
-    btn.onclick = () => {
-      app.activeMealDay = btn.dataset.mealday;
-      renderMeals(Math.max(0, diffDays(app.currentDate, app.config.startDate)), getDayLog(app.currentDate));
-    };
-  });
 
   // 周期校准弹窗
   const modal = document.getElementById("periodModal");
