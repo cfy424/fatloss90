@@ -54,7 +54,7 @@ body {
   padding: 16px 14px 20px;
 }
 
-/* 顶部标题与状态栏 */
+/* 顶部状态栏 */
 .header-bar {
   display: flex;
   justify-content: space-between;
@@ -1843,7 +1843,7 @@ async function syncWeightToCloud(w) {
   setSyncStatus("同步中…", false, true);
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(API_URL + "/api/weight", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1854,17 +1854,22 @@ async function syncWeightToCloud(w) {
     if (!res.ok) throw new Error();
     setSyncStatus("云端已同步 ✓", true);
     clearTimeout(syncResetTimer);
-    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 3000);
+    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2500);
   } catch (e) {
     setSyncStatus("已存本地 ✓", true);
+    clearTimeout(syncResetTimer);
+    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2500);
   }
 }
 
 async function pullCloudWeight() {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(API_URL + "/api/weight", { signal: controller.signal });
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(API_URL + "/api/weight?_t=" + Date.now(), { 
+      cache: "no-store",
+      signal: controller.signal 
+    });
     clearTimeout(timeoutId);
     if (!res.ok) return;
     const data = await res.json();
@@ -1875,7 +1880,8 @@ async function pullCloudWeight() {
       todayLog.weight = w;
       saveLocalData();
       renderAll();
-      setSyncStatus("已就绪", true);
+      setSyncStatus("云端已同步 ✓", true);
+      setTimeout(() => setSyncStatus("已就绪", true), 2000);
     }
   } catch (e) {}
 }
@@ -1917,7 +1923,7 @@ function initEvents() {
     if (sync) {
       setSyncStatus("准备同步…", true);
       clearTimeout(syncTimer);
-      syncTimer = setTimeout(() => syncWeightToCloud(w), 600);
+      syncTimer = setTimeout(() => syncWeightToCloud(w), 500);
     }
   }
 
