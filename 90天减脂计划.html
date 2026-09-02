@@ -405,12 +405,12 @@ body {
   margin-top: 14px;
 }
 .action-btn {
-  flex: 1;
-  padding: 10px;
+  width: 100%;
+  padding: 12px;
   border-radius: 12px;
   border: none;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 750;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,7 +418,9 @@ body {
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   user-select: none;
+  transition: transform 0.1s;
 }
+.action-btn:active { transform: scale(0.98); }
 .btn-primary-action {
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
   color: #FFF;
@@ -816,7 +818,7 @@ canvas#weightChart {
       </div>
       <div class="weight-input-group">
         <button class="step-btn" id="btnWeightMinus">-</button>
-        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="58.5">
+        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="57.9">
         <span class="weight-unit">kg</span>
         <button class="step-btn" id="btnWeightPlus">+</button>
       </div>
@@ -830,17 +832,17 @@ canvas#weightChart {
       </div>
       <div class="macro-cell c-pro">
         <div class="macro-name">蛋白质</div>
-        <div class="macro-val" id="valProtein">105g</div>
+        <div class="macro-val" id="valProtein">104g</div>
         <div class="macro-desc">1.8g/kg</div>
       </div>
       <div class="macro-cell c-carb">
         <div class="macro-name">碳水</div>
-        <div class="macro-val" id="valCarb">146g</div>
+        <div class="macro-val" id="valCarb">145g</div>
         <div class="macro-desc" id="descCarb">2.5g/kg</div>
       </div>
       <div class="macro-cell c-fat">
         <div class="macro-name">脂肪</div>
-        <div class="macro-val" id="valFat">53g</div>
+        <div class="macro-val" id="valFat">52g</div>
         <div class="macro-desc">0.9g/kg</div>
       </div>
     </div>
@@ -869,10 +871,8 @@ canvas#weightChart {
         <span id="lblWorkoutDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/6 完成</span>
       </div>
       <div id="exerciseList"></div>
-      <div class="training-action-row">
-        <button class="action-btn btn-primary-action" id="btnGoRestTimer">⏱️ 组间休息计时器</button>
-        <button class="action-btn btn-amber-action" id="btnGoHiitTimer">🚴 单车间歇助手</button>
-      </div>
+      <!-- 训练动作专属快捷按钮（力量只显组间，间歇只显单车，稳态有氧不显） -->
+      <div class="training-action-row" id="trainingActionRow"></div>
     </section>
 
     <!-- 三餐打卡 -->
@@ -897,7 +897,7 @@ canvas#weightChart {
   <main id="tab2" class="tab-content">
     
     <!-- 力量训练组间休息倒计时 -->
-    <section class="card">
+    <section class="card" id="cardRestTimer">
       <div class="card-title-row">
         <div class="card-title">⏱️ 力量组间休息计时器</div>
         <span class="card-subtitle">控制节奏 · 保护心率</span>
@@ -923,7 +923,7 @@ canvas#weightChart {
     </section>
 
     <!-- 动感单车 HIIT 计时器 -->
-    <section class="hiit-banner">
+    <section class="hiit-banner" id="cardHiitTimer">
       <div class="card-title-row" style="margin-bottom:6px;">
         <span style="font-size:15px; font-weight:800;">🚴 动感单车间歇 (HIIT) 专用助手</span>
         <span style="font-size:12px; color:#94A3B8;" id="hiitTotalRemain">总时长 30:00</span>
@@ -958,7 +958,7 @@ canvas#weightChart {
         </div>
         <div class="stat-box">
           <div class="stat-label">最新 7天均线</div>
-          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">58.5 kg</div>
+          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">57.9 kg</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">阶段目标</div>
@@ -1136,7 +1136,7 @@ const WEEK_PLAN = [
 /* ================== 状态管理 ================== */
 let app = {
   currentDate: fmtDate(new Date()),
-  weight: 58.5,
+  weight: 57.9,
   config: {
     height: 164,
     age: 29,
@@ -1297,7 +1297,7 @@ function renderAll() {
   // 4. 喝水打卡
   renderWater(dayLog.water || 0);
 
-  // 5. 训练动作列表
+  // 5. 训练动作列表与专属间歇按钮联动
   renderTraining(curDate, cycle, dayLog);
 
   // 6. 三餐列表
@@ -1347,6 +1347,7 @@ function renderTraining(dateStr, cycle, dayLog) {
   const weekDayIdx = (d.getDay() + 6) % 7;
   const plan = WEEK_PLAN[weekDayIdx];
   const listEl = document.getElementById("exerciseList");
+  const actionRow = document.getElementById("trainingActionRow");
   listEl.innerHTML = "";
 
   if (cycle.phase === "经期") {
@@ -1357,6 +1358,7 @@ function renderTraining(dateStr, cycle, dayLog) {
         🩸 <strong>经期专属建议：</strong> 暂停高强度力量训练，以散步 20-30 分钟、全身拉伸或动感单车 20 分钟慢速踩踏为主，放松骨盆与下背部。
       </div>
     `;
+    if (actionRow) actionRow.innerHTML = "";
     return;
   }
 
@@ -1368,6 +1370,7 @@ function renderTraining(dateStr, cycle, dayLog) {
         🌿 <strong>今日完全休息：</strong> 建议户外快步散步 20-30 分钟 + 全身柔韧拉伸，帮助肌肉超量恢复！
       </div>
     `;
+    if (actionRow) actionRow.innerHTML = "";
     return;
   }
 
@@ -1419,6 +1422,34 @@ function renderTraining(dateStr, cycle, dayLog) {
     document.getElementById("lblWorkoutDoneBadge").style.color = "var(--accent-green)";
   } else {
     document.getElementById("lblWorkoutDoneBadge").style.color = "var(--text-muted)";
+  }
+
+  // 专属快捷助手按钮联动：
+  // 1. 力量训练 (type === 's') -> 只显示力量组间休息计时器
+  // 2. 动感单车间歇 -> 只显示单车 HIIT 助手
+  // 3. 稳态有氧 / 休息日 -> 不显示计时器按钮
+  if (actionRow) {
+    if (plan.type === "s") {
+      actionRow.innerHTML = `
+        <button class="action-btn btn-primary-action" id="btnGoRestTimer">⏱️ 开启力量组间休息计时器</button>
+      `;
+      document.getElementById("btnGoRestTimer").onclick = () => {
+        document.querySelector('.nav-item[data-tab="tab2"]').click();
+        const el = document.getElementById("cardRestTimer");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      };
+    } else if (plan.title === "动感单车 · 间歇") {
+      actionRow.innerHTML = `
+        <button class="action-btn btn-amber-action" id="btnGoHiitTimer">🚴 启动动感单车间歇 (HIIT) 助手</button>
+      `;
+      document.getElementById("btnGoHiitTimer").onclick = () => {
+        document.querySelector('.nav-item[data-tab="tab2"]').click();
+        const el = document.getElementById("cardHiitTimer");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      };
+    } else {
+      actionRow.innerHTML = "";
+    }
   }
 }
 
@@ -1912,7 +1943,6 @@ async function pullCloudWeight(forceRender = false) {
 function checkResume() {
   const todayStr = fmtDate(new Date());
   if (app.currentDate !== todayStr) {
-    // 跨天了，自动切换到新日期
     app.currentDate = todayStr;
     renderAll();
   }
@@ -2003,14 +2033,6 @@ function initEvents() {
       renderMeals(Math.max(0, diffDays(app.currentDate, app.config.startDate)), getDayLog(app.currentDate));
     };
   });
-
-  // 快捷跳转计时器
-  document.getElementById("btnGoRestTimer").onclick = () => {
-    document.querySelector('.nav-item[data-tab="tab2"]').click();
-  };
-  document.getElementById("btnGoHiitTimer").onclick = () => {
-    document.querySelector('.nav-item[data-tab="tab2"]').click();
-  };
 
   // 周期校准弹窗
   const modal = document.getElementById("periodModal");
