@@ -322,6 +322,25 @@ body {
   border-radius: 6px;
 }
 
+/* 顶部换菜谱快捷按钮 */
+.random-meal-btn {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid #FED7AA;
+  background: #FFF7ED;
+  color: #EA580C;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  user-select: none;
+  transition: all 0.15s;
+}
+.random-meal-btn:active { transform: scale(0.95); background: #FFEDD5; }
+
 /* 喝水打卡条 */
 .water-card {
   background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
@@ -478,10 +497,15 @@ body {
 .meal-title-line {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   font-size: 14.5px;
   font-weight: 750;
   color: var(--text-main);
+}
+.meal-title-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .meal-dish-name {
   font-size: 12px;
@@ -491,6 +515,22 @@ body {
   padding: 2px 7px;
   border-radius: 6px;
 }
+.meal-swap-btn {
+  border: 1px solid #E2D5C8;
+  background: #FFFDF9;
+  color: var(--text-sub);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  user-select: none;
+  transition: all 0.15s;
+}
+.meal-swap-btn:active { background: #F5EBE1; transform: scale(0.95); }
+
 .meal-content-text {
   font-size: 13.5px;
   color: #3F3730;
@@ -924,9 +964,12 @@ canvas#weightChart {
       <div class="card-title-row">
         <div class="card-title-box">
           <div class="card-title">🍱 今日营养食谱</div>
-          <div class="card-subtitle-tag" id="lblMealTitle">周三 · 深海优质蛋白餐</div>
+          <div class="card-subtitle-tag" id="lblMealTitle">丰富高蛋白减脂餐</div>
         </div>
-        <span class="card-status-badge" id="lblMealDoneBadge">0/4 完成</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="random-meal-btn" id="btnRandomAllMeals" title="随机抽取一套新搭配">🎲 换一套搭配</button>
+          <span class="card-status-badge" id="lblMealDoneBadge">0/4</span>
+        </div>
       </div>
       <div id="mealList"></div>
       
@@ -934,6 +977,7 @@ canvas#weightChart {
       <div class="meal-helper-box">
         <div style="font-weight:750; color:var(--text-main); margin-bottom:4px; font-size:12px;">💡 食物克数已随今日体重与周期实时计算！</div>
         <div style="font-size:11.5px; color:var(--text-sub); line-height:1.55;">
+          • 点击每餐右侧 <strong>「🔄 换一道」</strong> 可自由切换喜欢的菜式<br>
           • <strong>主食</strong>：米饭一小拳（或燕麦4平汤匙、红薯/紫薯一拳）<br>
           • <strong>肉类</strong>：去皮禽肉/鱼虾一掌心（或瘦牛肉扑克牌大）<br>
           • <strong>蔬菜</strong>：深色蔬菜两拳（做熟约1.5-2碗，不限量）
@@ -1153,72 +1197,71 @@ const EXERCISES_DB = {
   ]
 };
 
-/* 7天营养食谱库（食物克数由 c:碳水, p:蛋白质, f:脂肪 实时动态计算） */
-const MEAL_RECIPES_7DAYS = [
-  {
-    theme: "周一 · 经典高纤能量餐",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥣", name: "无糖燕麦活力碗", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong>（约4平匙）+ 鸡蛋 <strong>2个</strong>（水煮/少油煎）+ 无糖豆浆 <strong>250ml</strong>` },
-      { type: "午餐", emoji: "🍚", name: "蒜香鸡胸能量饭", text: `米饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 香煎/蒸鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong>（约一掌）+ 西兰花 <strong>250g</strong> + 橄榄油 5g` },
-      { type: "加餐", emoji: "🍎", name: "低卡轻爽加餐", text: `脆苹果 <strong>1个</strong>（约一拳）+ 无糖浓稠酸奶 <strong>80g</strong>` },
-      { type: "晚餐", emoji: "🍤", name: "鲜虾时蔬豆腐煲", text: `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 白灼基围虾/虾仁 <strong>${Math.round(p * 1.43)}g</strong> + 嫩豆腐 <strong>120g</strong> + 绿叶菜 <strong>250g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周二 · 鲜美黑椒牛肉餐",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🍞", name: "全麦滑蛋吐司", text: `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong>（约2片）+ 无油滑蛋 <strong>2个</strong> + 低脂牛奶 <strong>200ml</strong>` },
-      { type: "午餐", emoji: "🥩", name: "黑椒洋葱炒牛肉", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong>（约扑克牌大）+ 彩椒/黄瓜 <strong>250g</strong> + 油 5g` },
-      { type: "加餐", emoji: "🍌", name: "快充坚果加餐", text: `香蕉 <strong>1根</strong> + 原味混合坚果 <strong>${Math.round(f * 0.16)}g</strong>（约一小把）` },
-      { type: "晚餐", emoji: "🍠", name: "慢碳鸡腿时蔬餐", text: `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong>（约一拳）+ 去皮去骨鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 大叶菜/生菜 <strong>250g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周三 · 深海优质蛋白餐",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥣", name: "高蛋白燕麦酸奶杯", text: `无糖燕麦 <strong>${Math.round(c * 0.28)}g</strong> + 全蛋 <strong>1个</strong> + 蛋白 <strong>2个</strong> + 无糖酸奶 <strong>100g</strong>` },
-      { type: "午餐", emoji: "🐟", name: "清蒸鲈鱼/香煎三文鱼", text: `米饭 <strong>${Math.round(c * 0.90)}g</strong> + 鲈鱼排/三文鱼 <strong>${Math.round(p * 1.40)}g</strong>（约一掌）+ 芦笋/西葫芦 <strong>250g</strong> + 油 4g` },
-      { type: "加餐", emoji: "🫐", name: "抗氧莓果加餐", text: `新鲜蓝莓/草莓 <strong>150g</strong>（约一小碗）+ 原味坚果 <strong>8g</strong>` },
-      { type: "晚餐", emoji: "🌽", name: "金玉满堂时蔬豆腐", text: `蒸甜玉米 <strong>${Math.round(c * 1.25)}g</strong>（约1根）+ 瘦里脊肉/鸡胸 <strong>${Math.round(p * 1.15)}g</strong> + 蒜香菠菜 <strong>300g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周四 · 鲜美滑蛋虾仁面",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥯", name: "贝果双蛋晨光餐", text: `全麦贝果/面包 <strong>${Math.round(c * 0.48)}g</strong> + 煎鸡蛋 <strong>2个</strong> + 黑咖啡/无糖豆浆 <strong>250ml</strong>` },
-      { type: "午餐", emoji: "🍜", name: "滑蛋大虾仁荞麦面", text: `荞麦面干重 <strong>${Math.round(c * 0.48)}g</strong>（煮熟约140g）+ 鲜滑蛋炒大虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 黄瓜黑木耳 <strong>250g</strong> + 油 5g` },
-      { type: "加餐", emoji: "🍅", name: "清甜番茄酸奶", text: `多汁圣女果/小番茄 <strong>150g</strong> + 无糖酸奶 <strong>80g</strong>` },
-      { type: "晚餐", emoji: "🍠", name: "紫薯慢炖鸡肉煲", text: `紫薯/红薯 <strong>${Math.round(c * 1.18)}g</strong> + 卤/煎鸡胸肉 <strong>${Math.round(p * 1.35)}g</strong> + 口蘑炒西兰花 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周五 · 意式香草鸡肉餐",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥣", name: "奶香燕麦双蛋餐", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong> 煮低脂奶 <strong>200ml</strong> + 嫩蒸水蛋 <strong>2个</strong>` },
-      { type: "午餐", emoji: "🍚", name: "迷迭香煎鸡胸饭", text: `米饭 <strong>${Math.round(c * 0.95)}g</strong> + 香草煎鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong> + 蒜炒荷兰豆/口蘑 <strong>250g</strong> + 油 5g` },
-      { type: "加餐", emoji: "🥝", name: "VC奇异果坚果加餐", text: `奇异果/猕猴桃 <strong>1-2个</strong> + 原味巴旦木 <strong>8g</strong>` },
-      { type: "晚餐", emoji: "🐟", name: "清蒸龙利鱼轻食餐", text: `蒸土豆/玉米 <strong>${Math.round(c * 1.25)}g</strong> + 清蒸龙利鱼/巴沙鱼 <strong>${Math.round(p * 1.50)}g</strong> + 白灼芥蓝/菜心 <strong>250g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周六 · 暖胃番茄炖牛肉",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥪", name: "芝士煎蛋全麦三明治", text: `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong> + 煎蛋 <strong>1个</strong> + 低脂芝士 <strong>1片</strong> + 无糖黑豆浆 <strong>250ml</strong>` },
-      { type: "午餐", emoji: "🥩", name: "浓郁番茄慢炖牛肉", text: `紫米/糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 番茄炖瘦牛肉 <strong>${Math.round(p * 1.15)}g</strong> + 炒西兰花胡萝卜 <strong>250g</strong> + 油 5g` },
-      { type: "加餐", emoji: "🍊", name: "甜橙轻酸奶加餐", text: `多汁甜橙 <strong>1个</strong> + 原味无糖酸奶 <strong>80g</strong>` },
-      { type: "晚餐", emoji: "🍲", name: "鲜虾豆腐上汤时蔬", text: `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 鲜虾仁炒豆腐 <strong>${Math.round(p * 1.30)}g</strong> + 上汤娃娃菜 <strong>250g</strong> + 油 4g` }
-    ]
-  },
-  {
-    theme: "周日 · 轻盈海鲜鲜蔬日",
-    calc: (c, p, f) => [
-      { type: "早餐", emoji: "🥣", name: "经典双蛋燕麦餐", text: `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong> + 溏心蛋 <strong>2个</strong> + 无糖纯豆浆 <strong>250ml</strong>` },
-      { type: "午餐", emoji: "🦑", name: "白灼双鲜杂粮饭", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 白灼鱿鱼/鲜虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 蒜蓉炒菜心/芦笋 <strong>250g</strong> + 油 5g` },
-      { type: "加餐", emoji: "🫐", name: "蓝莓坚果能量包", text: `新鲜蓝莓 <strong>100g</strong> + 原味坚果 <strong>8g</strong>` },
-      { type: "晚餐", emoji: "🎃", name: "香甜板栗南瓜鸡腿", text: `蒸板栗南瓜/红薯 <strong>${Math.round(c * 1.20)}g</strong> + 嫩煎去皮鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 清炒时蔬 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` }
-    ]
-  }
-];
+/* ================== 超丰富多变菜谱库 (支持各餐独立随机与换一道) ================== */
+const RECIPES_POOL = {
+  breakfast: [
+    { name: "无糖燕麦活力碗", emoji: "🥣", calc: (c, p, f) => `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong>（约4平匙）+ 鸡蛋 <strong>2个</strong>（水煮/少油煎）+ 无糖豆浆 <strong>250ml</strong>` },
+    { name: "全麦无油滑蛋吐司", emoji: "🍞", calc: (c, p, f) => `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong>（约2片）+ 无油滑蛋 <strong>2个</strong> + 低脂牛奶 <strong>200ml</strong>` },
+    { name: "高蛋白燕麦酸奶杯", emoji: "🥣", calc: (c, p, f) => `无糖燕麦 <strong>${Math.round(c * 0.28)}g</strong> + 全蛋 <strong>1个</strong> + 蛋白 <strong>2个</strong> + 无糖酸奶 <strong>100g</strong>` },
+    { name: "全麦贝果双蛋晨光餐", emoji: "🥯", calc: (c, p, f) => `全麦贝果/面包 <strong>${Math.round(c * 0.48)}g</strong> + 煎鸡蛋 <strong>2个</strong> + 现磨黑咖啡/无糖豆浆 <strong>250ml</strong>` },
+    { name: "奶香燕麦嫩蒸水蛋", emoji: "🥣", calc: (c, p, f) => `无糖燕麦 <strong>${Math.round(c * 0.31)}g</strong> 煮低脂奶 <strong>200ml</strong> + 嫩蒸水蛋 <strong>2个</strong>` },
+    { name: "芝士煎蛋全麦三明治", emoji: "🥪", calc: (c, p, f) => `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong> + 煎蛋 <strong>1个</strong> + 低脂芝士 <strong>1片</strong> + 生菜 + 无糖黑豆浆 <strong>250ml</strong>` },
+    { name: "鲜虾滑蛋开放三明治", emoji: "🥪", calc: (c, p, f) => `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong> + 鲜虾仁 <strong>${Math.round(p * 0.8)}g</strong> + 滑蛋 <strong>1个</strong> + 美式黑咖啡` },
+    { name: "蒸紫薯水波蛋双拼", emoji: "🍠", calc: (c, p, f) => `蒸紫薯 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 水波溏心蛋 <strong>2个</strong> + 无糖高钙豆奶 <strong>250ml</strong>` },
+    { name: "菠菜滑蛋全麦卷饼", emoji: "🌯", calc: (c, p, f) => `全麦卷饼皮 <strong>1张</strong> + 炒鸡蛋 <strong>2个</strong> + 嫩菠菜 <strong>100g</strong> + 低脂牛奶 <strong>200ml</strong>` },
+    { name: "甜玉米双蛋活力餐", emoji: "🌽", calc: (c, p, f) => `蒸甜玉米 <strong>${Math.round(c * 0.9)}g</strong>（约大半根）+ 白水煮蛋 <strong>2个</strong> + 无糖豆浆 <strong>250ml</strong>` },
+    { name: "蓝莓奇亚籽燕麦碗", emoji: "🫐", calc: (c, p, f) => `无糖燕麦 <strong>${Math.round(c * 0.28)}g</strong> + 蓝莓 <strong>80g</strong> + 煎蛋 <strong>2个</strong> + 温牛奶 <strong>200ml</strong>` },
+    { name: "香煎嫩豆腐双蛋拼盘", emoji: "🍳", calc: (c, p, f) => `全麦吐司 <strong>${Math.round(c * 0.45)}g</strong> + 嫩豆腐 <strong>150g</strong> 香煎 + 水煮蛋 <strong>2个</strong> + 黑咖啡` }
+  ],
+  lunch: [
+    { name: "蒜香黑椒嫩煎鸡胸饭", emoji: "🍚", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 香煎/蒸鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong>（约一掌）+ 西兰花 <strong>250g</strong> + 橄榄油 5g` },
+    { name: "黑椒洋葱炒瘦牛肉", emoji: "🥩", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong>（约扑克牌大）+ 彩椒/黄瓜 <strong>250g</strong> + 油 5g` },
+    { name: "清蒸鲜嫩鲈鱼/三文鱼", emoji: "🐟", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.90)}g</strong> + 鲈鱼排/三文鱼 <strong>${Math.round(p * 1.40)}g</strong>（约一掌）+ 芦笋/西葫芦 <strong>250g</strong> + 油 4g` },
+    { name: "鲜美滑蛋大虾仁荞麦面", emoji: "🍜", calc: (c, p, f) => `荞麦面干重 <strong>${Math.round(c * 0.48)}g</strong>（煮熟约140g）+ 鲜滑蛋炒大虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 黄瓜黑木耳 <strong>250g</strong> + 油 5g` },
+    { name: "迷迭香香草煎鸡胸饭", emoji: "🍚", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.95)}g</strong> + 香草煎鸡胸肉 <strong>${Math.round(p * 1.43)}g</strong> + 蒜炒荷兰豆/口蘑 <strong>250g</strong> + 油 5g` },
+    { name: "浓郁番茄慢炖牛肉", emoji: "🥩", calc: (c, p, f) => `紫米/糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 番茄炖瘦牛肉 <strong>${Math.round(p * 1.15)}g</strong> + 炒西兰花胡萝卜 <strong>250g</strong> + 油 5g` },
+    { name: "白灼鲜双鲜杂粮饭", emoji: "🦑", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 白灼鱿鱼/鲜虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 蒜蓉炒菜心/芦笋 <strong>250g</strong> + 油 5g` },
+    { name: "香煎柠檬龙利鱼排", emoji: "🐟", calc: (c, p, f) => `五谷米饭 <strong>${Math.round(c * 0.95)}g</strong> + 香煎龙利鱼/巴沙鱼 <strong>${Math.round(p * 1.50)}g</strong> + 蒜香西兰花口蘑 <strong>250g</strong> + 油 4g` },
+    { name: "孜然彩椒炒鸡胸柳", emoji: "🍗", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 孜然嫩鸡胸柳 <strong>${Math.round(p * 1.43)}g</strong> + 甜彩椒西葫芦 <strong>250g</strong> + 油 5g` },
+    { name: "葱油清蒸鲜海鲈鱼", emoji: "🐟", calc: (c, p, f) => `白米/杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 清蒸海鲈鱼柳 <strong>${Math.round(p * 1.40)}g</strong> + 蚝油生菜/菜心 <strong>250g</strong> + 油 4g` },
+    { name: "泰式罗勒酸辣鸡肉碎", emoji: "🍲", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 鸡胸肉碎 <strong>${Math.round(p * 1.43)}g</strong> + 四季豆/甜椒丁 <strong>250g</strong> + 油 5g` },
+    { name: "鲜香菇炒牛里脊片", emoji: "🥩", calc: (c, p, f) => `紫米饭 <strong>${Math.round(c * 0.95)}g</strong> + 鲜香菇炒牛肉片 <strong>${Math.round(p * 1.15)}g</strong> + 白灼芦笋 <strong>250g</strong> + 油 5g` },
+    { name: "意式番茄肉酱荞麦面", emoji: "🍝", calc: (c, p, f) => `荞麦面干重 <strong>${Math.round(c * 0.48)}g</strong> + 瘦牛肉末番茄酱 <strong>${Math.round(p * 1.20)}g</strong> + 口蘑西兰花 <strong>250g</strong> + 油 4g` },
+    { name: "柠檬香草烤三文鱼", emoji: "🐟", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.90)}g</strong> + 烤三文鱼排 <strong>${Math.round(p * 1.35)}g</strong> + 烤芦笋圣女果 <strong>250g</strong> + 油 4g` },
+    { name: "干贝虾仁炒丝瓜清甜饭", emoji: "🍤", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.95)}g</strong> + 鲜基围虾仁/干贝 <strong>${Math.round(p * 1.45)}g</strong> + 鲜甜丝瓜 <strong>250g</strong> + 油 4g` },
+    { name: "韩式无油泡菜鸡胸拌饭", emoji: "🍚", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 手撕鸡胸丝 <strong>${Math.round(p * 1.43)}g</strong> + 泡菜豆芽菠菜 <strong>250g</strong> + 煎蛋1个` }
+  ],
+  snack: [
+    { name: "脆苹果浓稠酸奶", emoji: "🍎", calc: (c, p, f) => `脆甜苹果 <strong>1个</strong>（约一拳）+ 无糖浓稠酸奶 <strong>80g</strong>` },
+    { name: "香蕉原味坚果包", emoji: "🍌", calc: (c, p, f) => `能量香蕉 <strong>1根</strong> + 原味混合坚果 <strong>${Math.round(f * 0.16)}g</strong>（约一小把）` },
+    { name: "抗氧蓝莓生核桃", emoji: "🫐", calc: (c, p, f) => `新鲜蓝莓/草莓 <strong>150g</strong>（约一小碗）+ 原味生核桃/巴旦木 <strong>8g</strong>` },
+    { name: "多汁圣女果轻酸奶", emoji: "🍅", calc: (c, p, f) => `多汁圣女果/小番茄 <strong>150g</strong> + 原味无糖酸奶 <strong>80g</strong>` },
+    { name: "VC奇异果坚果加餐", emoji: "🥝", calc: (c, p, f) => `奇异果/金果猕猴桃 <strong>1-2个</strong> + 原味巴旦木 <strong>8g</strong>` },
+    { name: "甜橙轻酸奶加餐", emoji: "🍊", calc: (c, p, f) => `多汁甜橙 <strong>1个</strong> + 原味无糖酸奶 <strong>80g</strong>` },
+    { name: "即食低脂鸡肉肠黑咖", emoji: "🌭", calc: (c, p, f) => `无淀粉低脂鸡胸肉肠 <strong>1根</strong>（约50g）+ 美式冰黑咖啡 1杯` },
+    { name: "红心西柚开心果", emoji: "🍊", calc: (c, p, f) => `红心西柚 <strong>半个</strong>（约150g）+ 原味开心果 <strong>8g</strong>` },
+    { name: "清爽黄瓜条配无糖酸奶", emoji: "🥒", calc: (c, p, f) => `脆黄瓜条 <strong>1根</strong> + 浓稠希腊酸奶 <strong>100g</strong>（蘸食绝配）` },
+    { name: "新鲜大樱桃/车厘子", emoji: "🍒", calc: (c, p, f) => `大樱桃 <strong>12-15颗</strong>（约130g）+ 原味坚果 <strong>8g</strong>` }
+  ],
+  dinner: [
+    { name: "鲜虾时蔬嫩豆腐煲", emoji: "🍤", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 白灼基围虾/虾仁 <strong>${Math.round(p * 1.43)}g</strong> + 嫩豆腐 <strong>120g</strong> + 绿叶菜 <strong>250g</strong> + 油 4g` },
+    { name: "慢碳鸡腿时蔬餐", emoji: "🍠", calc: (c, p, f) => `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong>（约一拳）+ 去皮去骨鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 大叶菜/生菜 <strong>250g</strong> + 油 4g` },
+    { name: "金玉满堂时蔬豆腐", emoji: "🌽", calc: (c, p, f) => `蒸甜玉米 <strong>${Math.round(c * 1.25)}g</strong>（约1根）+ 瘦里脊肉/鸡胸 <strong>${Math.round(p * 1.15)}g</strong> + 蒜香菠菜 <strong>300g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
+    { name: "紫薯慢炖鸡肉口蘑", emoji: "🍠", calc: (c, p, f) => `紫薯/红薯 <strong>${Math.round(c * 1.18)}g</strong> + 卤/煎鸡胸肉 <strong>${Math.round(p * 1.35)}g</strong> + 口蘑炒西兰花 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
+    { name: "清蒸龙利鱼轻食餐", emoji: "🐟", calc: (c, p, f) => `蒸土豆/玉米 <strong>${Math.round(c * 1.25)}g</strong> + 清蒸龙利鱼/巴沙鱼 <strong>${Math.round(p * 1.50)}g</strong> + 白灼芥蓝/菜心 <strong>250g</strong> + 油 4g` },
+    { name: "鲜虾豆腐上汤时蔬", emoji: "🍲", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 鲜虾仁炒豆腐 <strong>${Math.round(p * 1.30)}g</strong> + 上汤娃娃菜 <strong>250g</strong> + 油 4g` },
+    { name: "香甜板栗南瓜鸡腿", emoji: "🎃", calc: (c, p, f) => `蒸板栗南瓜/红薯 <strong>${Math.round(c * 1.20)}g</strong> + 嫩煎去皮鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 清炒时蔬 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
+    { name: "鲜菌菇老豆腐虾仁汤", emoji: "🍲", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.83)}g</strong> + 鲜虾仁 <strong>${Math.round(p * 1.20)}g</strong> + 老豆腐 <strong>120g</strong> + 鲜口蘑平菇 <strong>250g</strong> + 油 4g` },
+    { name: "手工鸡胸肉丸蔬菜煲", emoji: "🍲", calc: (c, p, f) => `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong> + 手工鸡肉丸 <strong>${Math.round(p * 1.40)}g</strong> + 冬瓜菠菜大叶菜 <strong>300g</strong> + 油 4g` },
+    { name: "清蒸生蚝鲜贝拼盘", emoji: "🦪", calc: (c, p, f) => `甜玉米 <strong>${Math.round(c * 1.20)}g</strong> + 鲜蛤贝类/生蚝肉 <strong>${Math.round(p * 1.50)}g</strong> + 白灼西兰花 <strong>250g</strong> + 油 4g` },
+    { name: "黑椒老豆腐瘦牛排", emoji: "🥩", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.83)}g</strong> + 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong> + 煎老豆腐 <strong>120g</strong> + 罗马生菜 <strong>250g</strong> + 油 4g` },
+    { name: "慢烤三文鱼时蔬拼盘", emoji: "🐟", calc: (c, p, f) => `紫薯 <strong>${Math.round(c * 1.18)}g</strong> + 三文鱼排 <strong>${Math.round(p * 1.30)}g</strong> + 烤南瓜芦笋小番茄 <strong>250g</strong> + 油 3g` },
+    { name: "番茄浓汤大虾魔芋锅", emoji: "🍲", calc: (c, p, f) => `玉米 <strong>${Math.round(c * 1.20)}g</strong> + 鲜大虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 番茄浓汤煮白菜木耳 <strong>300g</strong> + 豆腐 <strong>100g</strong>` },
+    { name: "荷兰豆木耳炒鸡胸", emoji: "🍗", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.83)}g</strong> + 鸡胸肉片 <strong>${Math.round(p * 1.35)}g</strong> + 荷兰豆黑木耳 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
+    { name: "干贝鲜虾冬瓜清肠煲", emoji: "🥣", calc: (c, p, f) => `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong> + 干贝虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 炖冬瓜海带 <strong>300g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
+    { name: "上汤菠菜瘦里脊肉片", emoji: "🍲", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 瘦猪里脊肉片 <strong>${Math.round(p * 1.20)}g</strong> + 嫩豆腐 <strong>100g</strong> + 蒜香菠菜 <strong>300g</strong> + 油 4g` }
+  ]
+};
 
 /* 周计划安排：周三设为周中休息日，周日转为单车稳态有氧（3天训练+1天休息+3天训练循环） */
 const WEEK_PLAN = [
@@ -1242,7 +1285,7 @@ let app = {
     periodBaseline: "2026-08-18",
     cycleLen: 28
   },
-  logs: {} // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, notes: {} } }
+  logs: {} // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, mealChoices: {}, notes: {} } }
 };
 
 function loadLocalData() {
@@ -1268,9 +1311,11 @@ function getDayLog(dateStr) {
       water: 0,
       exercises: {},
       exerciseNotes: {},
-      meals: {}
+      meals: {},
+      mealChoices: {}
     };
   }
+  if (!app.logs[dateStr].mealChoices) app.logs[dateStr].mealChoices = {};
   return app.logs[dateStr];
 }
 
@@ -1397,7 +1442,7 @@ function renderAll() {
   // 5. 训练动作列表与专属间歇按钮联动
   renderTraining(curDate, cycle, dayLog);
 
-  // 6. 三餐列表（随体重与宏量营养素实时联动克数）
+  // 6. 三餐列表（随体重与宏量营养素实时联动克数，支持自由换一道与随机）
   renderMeals(dayIdx, dayLog, macros);
 
   // 7. 设置项反显
@@ -1547,23 +1592,38 @@ function renderTraining(dateStr, cycle, dayLog) {
   }
 }
 
-/* ================== 三餐打卡模块（纯当日智能食谱，动态计算克数） ================== */
+/* ================== 三餐打卡模块（大库随机 + 单餐换一换 + 动态克数） ================== */
+const MEAL_KEYS = [
+  { key: "breakfast", title: "早餐", pool: RECIPES_POOL.breakfast },
+  { key: "lunch", title: "午餐", pool: RECIPES_POOL.lunch },
+  { key: "snack", title: "加餐", pool: RECIPES_POOL.snack },
+  { key: "dinner", title: "晚餐", pool: RECIPES_POOL.dinner }
+];
+
 function renderMeals(dayIdx, dayLog, macros) {
   const d = parseDate(app.currentDate);
-  const recipeIndex = (d.getDay() + 6) % 7; // 按星期周循环
-  const recipe = MEAL_RECIPES_7DAYS[recipeIndex];
+  const defaultBaseIdx = (d.getDay() + 6) % 7;
 
-  document.getElementById("lblMealTitle").textContent = recipe.theme;
+  // 确保当天的各餐索引已初始化
+  if (!dayLog.mealChoices) dayLog.mealChoices = {};
+  MEAL_KEYS.forEach((m, idx) => {
+    if (typeof dayLog.mealChoices[m.key] !== "number") {
+      dayLog.mealChoices[m.key] = (defaultBaseIdx + idx * 2) % m.pool.length;
+    }
+  });
 
-  const items = recipe.calc(macros.c, macros.p, macros.f);
   const listEl = document.getElementById("mealList");
   listEl.innerHTML = "";
 
   let doneCount = 0;
 
-  items.forEach((item) => {
-    const isDone = !!(dayLog.meals && dayLog.meals[item.type]);
+  MEAL_KEYS.forEach((m) => {
+    const choiceIdx = dayLog.mealChoices[m.key] % m.pool.length;
+    const dish = m.pool[choiceIdx];
+    const isDone = !!(dayLog.meals && dayLog.meals[m.title]);
     if (isDone) doneCount++;
+
+    const textContent = dish.calc(macros.c, macros.p, macros.f);
 
     const block = document.createElement("div");
     block.className = "meal-block";
@@ -1571,18 +1631,31 @@ function renderMeals(dayIdx, dayLog, macros) {
       <div class="check-circle ${isDone ? "checked" : ""}">✓</div>
       <div class="meal-info">
         <div class="meal-title-line">
-          <span>${item.emoji} ${item.type}</span>
-          <span class="meal-dish-name">${item.name}</span>
+          <div class="meal-title-left">
+            <span>${dish.emoji} ${m.title}</span>
+            <span class="meal-dish-name">${dish.name}</span>
+          </div>
+          <button class="meal-swap-btn" data-key="${m.key}">🔄 换一道</button>
         </div>
-        <div class="meal-content-text">${item.text}</div>
+        <div class="meal-content-text">${textContent}</div>
       </div>
     `;
 
+    // 勾选完成
     block.querySelector(".check-circle").onclick = () => {
       if (!dayLog.meals) dayLog.meals = {};
-      dayLog.meals[item.type] = !dayLog.meals[item.type];
+      dayLog.meals[m.title] = !dayLog.meals[m.title];
       saveLocalData();
-      if (dayLog.meals[item.type]) playCheerTone();
+      if (dayLog.meals[m.title]) playCheerTone();
+      renderMeals(dayIdx, dayLog, macros);
+    };
+
+    // 单餐换一换
+    block.querySelector(".meal-swap-btn").onclick = (e) => {
+      e.stopPropagation();
+      dayLog.mealChoices[m.key] = (choiceIdx + 1 + Math.floor(Math.random() * 2)) % m.pool.length;
+      saveLocalData();
+      playBeep(720, 0.08);
       renderMeals(dayIdx, dayLog, macros);
     };
 
@@ -1591,9 +1664,21 @@ function renderMeals(dayIdx, dayLog, macros) {
 
   const badge = document.getElementById("lblMealDoneBadge");
   if (badge) {
-    badge.textContent = `${doneCount}/${items.length} 完成`;
-    badge.style.color = (doneCount === items.length && doneCount > 0) ? "var(--accent-green)" : "var(--text-muted)";
+    badge.textContent = `${doneCount}/4 完成`;
+    badge.style.color = (doneCount === 4) ? "var(--accent-green)" : "var(--text-muted)";
   }
+}
+
+// 随机换一整套
+function randomizeAllMeals() {
+  const dayLog = getDayLog(app.currentDate);
+  if (!dayLog.mealChoices) dayLog.mealChoices = {};
+  MEAL_KEYS.forEach(m => {
+    dayLog.mealChoices[m.key] = Math.floor(Math.random() * m.pool.length);
+  });
+  saveLocalData();
+  playCheerTone();
+  renderAll();
 }
 
 /* ================== 组间休息计时器 ================== */
@@ -2058,6 +2143,9 @@ function initEvents() {
     pullCloudWeight();
     playBeep(650, 0.08);
   };
+
+  // 随机换一套菜谱
+  document.getElementById("btnRandomAllMeals").onclick = randomizeAllMeals;
 
   // Tab 切换
   document.querySelectorAll(".nav-item").forEach(btn => {
