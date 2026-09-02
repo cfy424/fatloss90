@@ -28,7 +28,7 @@ STRENGTH = {
         "下肢力量 A",
         "高脚杯深蹲 3×12-15（哑铃6-8kg）｜罗马尼亚硬拉 3×12（各4-6kg）｜负重臀桥 3×12-15（6-10kg）｜箭步蹲 2×10/侧（各3-5kg）｜弹力带侧向走 3×15｜平板支撑 3×30s",
     ),
-    "周三": (
+    "周四": (
         "上肢力量 B",
         "哑铃卧推 3×10-12（各3-5kg）｜单臂划船 3×12/侧（6-8kg）｜肩推 3×10-12（各2-4kg）｜弹力带面拉 3×15-20｜二头弯举 2×12-15（各2-3kg）｜跪姿俯卧撑 2×8-12",
     ),
@@ -85,18 +85,21 @@ def build_message(date: dt.date, meals: dict) -> str:
     else:
         kcal, carbs, note = 1470, "145g", "正常执行碳水渐降"
 
-    # 训练安排：周一/周三力量，周二/周五/周六稳定有氧，周四间歇，周日休息
+    # 训练安排：周一/周四力量，周三周中休息日，周五间歇，周二/周六/周日稳定有氧
     if day <= 6:
         training = MENSTRUAL_LIGHT
-    elif weekday in STRENGTH:
-        title, detail = STRENGTH[weekday]
+    elif weekday == "周一":
+        title, detail = STRENGTH["周一"]
         training = f"{title}：{detail}"
     elif weekday == "周四":
-        training = SPIN_INTERVAL
-    elif weekday in ("周二", "周五", "周六"):
-        training = SPIN_STEADY
-    else:
+        title, detail = STRENGTH["周四"]
+        training = f"{title}：{detail}"
+    elif weekday == "周三":
         training = REST_DAY
+    elif weekday == "周五":
+        training = SPIN_INTERVAL
+    else:
+        training = SPIN_STEADY
 
     tip = TIPS[(date - dt.date(2026, 9, 2)).days % len(TIPS)]
 
