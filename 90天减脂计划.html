@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="theme-color" content="#FFF9F5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -821,7 +824,7 @@ canvas#weightChart {
       </div>
       <div class="weight-input-group">
         <button class="step-btn" id="btnWeightMinus">-</button>
-        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="57.9">
+        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="58.5">
         <span class="weight-unit">kg</span>
         <button class="step-btn" id="btnWeightPlus">+</button>
       </div>
@@ -835,17 +838,17 @@ canvas#weightChart {
       </div>
       <div class="macro-cell c-pro">
         <div class="macro-name">蛋白质</div>
-        <div class="macro-val" id="valProtein">104g</div>
+        <div class="macro-val" id="valProtein">105g</div>
         <div class="macro-desc">1.8g/kg</div>
       </div>
       <div class="macro-cell c-carb">
         <div class="macro-name">碳水</div>
-        <div class="macro-val" id="valCarb">145g</div>
+        <div class="macro-val" id="valCarb">146g</div>
         <div class="macro-desc" id="descCarb">2.5g/kg</div>
       </div>
       <div class="macro-cell c-fat">
         <div class="macro-name">脂肪</div>
-        <div class="macro-val" id="valFat">52g</div>
+        <div class="macro-val" id="valFat">53g</div>
         <div class="macro-desc">0.9g/kg</div>
       </div>
     </div>
@@ -964,7 +967,7 @@ canvas#weightChart {
         </div>
         <div class="stat-box">
           <div class="stat-label">最新 7天均线</div>
-          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">57.9 kg</div>
+          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">58.5 kg</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">阶段目标</div>
@@ -1180,7 +1183,7 @@ const WEEK_PLAN = [
 /* ================== 状态管理 ================== */
 let app = {
   currentDate: fmtDate(new Date()),
-  weight: 57.9,
+  weight: 58.5,
   config: {
     height: 164,
     age: 29,
@@ -1958,12 +1961,13 @@ async function syncWeightToCloud(w) {
 }
 
 async function pullCloudWeight(forceRender = false) {
-  setSyncStatus("刷新中…", false, true);
+  setSyncStatus("拉取中…", false, true);
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 6000);
     const res = await fetch(API_URL + "/api/weight?_t=" + Date.now(), { 
       cache: "no-store",
+      headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" },
       signal: controller.signal 
     });
     clearTimeout(timeoutId);
@@ -1971,15 +1975,12 @@ async function pullCloudWeight(forceRender = false) {
     const data = await res.json();
     const w = Number(data && data.weight);
     if (Number.isFinite(w) && w > 30) {
-      const changed = Math.abs(w - app.weight) > 0.01;
       app.weight = w;
       const todayLog = getDayLog(app.currentDate);
-      if (changed || forceRender) {
-        todayLog.weight = w;
-        saveLocalData();
-        renderAll();
-      }
-      setSyncStatus("云端已同步 ✓", true);
+      todayLog.weight = w;
+      saveLocalData();
+      renderAll();
+      setSyncStatus("已同步云端 ✓", true);
       setTimeout(() => setSyncStatus("已就绪", true), 1500);
       return;
     }
