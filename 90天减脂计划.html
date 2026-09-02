@@ -177,22 +177,33 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px dashed #F1E5DA;
 }
-.weight-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-main);
+.weight-title-box {
   display: flex;
-  align-items: center;
-  gap: 5px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.weight-title-main {
+  font-size: 15px;
+  font-weight: 750;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+.weight-title-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 .weight-input-group {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 .step-btn {
   width: 36px;
@@ -212,9 +223,9 @@ body {
 }
 .step-btn:active { background: #F5EAE0; }
 .weight-input {
-  width: 78px;
+  width: 76px;
   text-align: center;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--primary-dark);
   border: 1px solid #E8D8CA;
@@ -275,21 +286,40 @@ body {
 .card-title-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 8px;
   margin-bottom: 12px;
 }
+.card-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
 .card-title {
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 750;
   color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
-.card-subtitle {
+.card-subtitle-tag {
   font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.card-status-badge {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--text-muted);
-  font-weight: normal;
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 2px 8px;
+  background: #FDF8F3;
+  border-radius: 6px;
 }
 
 /* 喝水打卡条 */
@@ -329,10 +359,11 @@ body {
   box-shadow: 0 3px 8px rgba(2, 132, 199, 0.3);
 }
 .water-text-val {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 750;
   color: #0284C7;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .water-quick-btns {
   display: flex;
@@ -819,9 +850,9 @@ canvas#weightChart {
   <!-- 体重联动与 4 大宏量营养素卡片 -->
   <div class="weight-link-card">
     <div class="weight-row">
-      <div class="weight-title">
-        <span>⚖️ 晨重联动</span>
-        <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(自动联动营养素与食谱克数)</span>
+      <div class="weight-title-box">
+        <div class="weight-title-main">⚖️ 晨重联动</div>
+        <div class="weight-title-sub">自动联动营养素与食谱</div>
       </div>
       <div class="weight-input-group">
         <button class="step-btn" id="btnWeightMinus">-</button>
@@ -861,7 +892,10 @@ canvas#weightChart {
     <!-- 喝水打卡 -->
     <section class="card water-card">
       <div class="card-title-row">
-        <div class="card-title">💧 今日喝水打卡 <span class="card-subtitle">(目标 2000ml)</span></div>
+        <div class="card-title-box">
+          <div class="card-title">💧 今日喝水打卡</div>
+          <div class="card-subtitle-tag">目标 2000ml</div>
+        </div>
         <div class="water-text-val"><span id="lblWaterVal">0</span> / 2000 ml</div>
       </div>
       <div class="water-cups-row" id="waterCups"></div>
@@ -874,8 +908,11 @@ canvas#weightChart {
     <!-- 训练打卡 -->
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">🏋️ 今日训练清单 <span class="card-subtitle" id="lblWorkoutTitle">下肢力量 A</span></div>
-        <span id="lblWorkoutDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/6 完成</span>
+        <div class="card-title-box">
+          <div class="card-title">🏋️ 今日训练清单</div>
+          <div class="card-subtitle-tag" id="lblWorkoutTitle">下肢力量 A</div>
+        </div>
+        <span class="card-status-badge" id="lblWorkoutDoneBadge">0/6 完成</span>
       </div>
       <div id="exerciseList"></div>
       <!-- 专属快捷动作按钮（力量只显组间，间歇只显单车，稳态有氧和休息日不显） -->
@@ -885,8 +922,11 @@ canvas#weightChart {
     <!-- 今日营养三餐打卡 -->
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">🍱 今日营养食谱 <span class="card-subtitle" id="lblMealTitle">周三 · 深海优质蛋白餐</span></div>
-        <span id="lblMealDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/4 完成</span>
+        <div class="card-title-box">
+          <div class="card-title">🍱 今日营养食谱</div>
+          <div class="card-subtitle-tag" id="lblMealTitle">周三 · 深海优质蛋白餐</div>
+        </div>
+        <span class="card-status-badge" id="lblMealDoneBadge">0/4 完成</span>
       </div>
       <div id="mealList"></div>
       
@@ -909,8 +949,10 @@ canvas#weightChart {
     <!-- 力量训练组间休息倒计时 -->
     <section class="card" id="cardRestTimer">
       <div class="card-title-row">
-        <div class="card-title">⏱️ 力量组间休息计时器</div>
-        <span class="card-subtitle">控制节奏 · 保护心率</span>
+        <div class="card-title-box">
+          <div class="card-title">⏱️ 力量组间休息计时器</div>
+          <div class="card-subtitle-tag">控制节奏 · 保护心率</div>
+        </div>
       </div>
       <div class="timer-container">
         <div class="timer-dial-outer" id="restDial" style="--p: 100;">
@@ -958,8 +1000,10 @@ canvas#weightChart {
     
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">📈 体重趋势与 7 天均线</div>
-        <span class="card-subtitle">过滤水分波动</span>
+        <div class="card-title-box">
+          <div class="card-title">📈 体重趋势与 7 天均线</div>
+          <div class="card-subtitle-tag">过滤水分波动</div>
+        </div>
       </div>
       <div class="stat-summary-row">
         <div class="stat-box">
@@ -986,8 +1030,10 @@ canvas#weightChart {
 
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">📝 历史记录明细</div>
-        <span class="card-subtitle">按日期记录</span>
+        <div class="card-title-box">
+          <div class="card-title">📝 历史记录明细</div>
+          <div class="card-subtitle-tag">按日期记录</div>
+        </div>
       </div>
       <div class="history-list" id="historyList"></div>
     </section>
@@ -999,7 +1045,9 @@ canvas#weightChart {
     
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">🌸 生理周期智能校准</div>
+        <div class="card-title-box">
+          <div class="card-title">🌸 生理周期智能校准</div>
+        </div>
       </div>
       <button class="period-btn-lg" id="btnPeriodCalib">
         🩸 今天来月经了（一键重置为 D1）
@@ -1011,7 +1059,9 @@ canvas#weightChart {
 
     <section class="card">
       <div class="card-title-row">
-        <div class="card-title">⚙️ 个人基本参数设置</div>
+        <div class="card-title-box">
+          <div class="card-title">⚙️ 个人基本参数设置</div>
+        </div>
       </div>
       <div class="settings-group">
         <div class="setting-item">
@@ -1118,7 +1168,7 @@ const MEAL_RECIPES_7DAYS = [
     theme: "周二 · 鲜美黑椒牛肉餐",
     calc: (c, p, f) => [
       { type: "早餐", emoji: "🍞", name: "全麦滑蛋吐司", text: `全麦吐司 <strong>${Math.round(c * 0.48)}g</strong>（约2片）+ 无油滑蛋 <strong>2个</strong> + 低脂牛奶 <strong>200ml</strong>` },
-      { type: "午餐", emoji: "🥩", name: "黑椒洋葱炒牛肉", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong>（约扑牌大）+ 彩椒/黄瓜 <strong>250g</strong> + 油 5g` },
+      { type: "午餐", emoji: "🥩", name: "黑椒洋葱炒牛肉", text: `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong>（约一小拳）+ 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong>（约扑克牌大）+ 彩椒/黄瓜 <strong>250g</strong> + 油 5g` },
       { type: "加餐", emoji: "🍌", name: "快充坚果加餐", text: `香蕉 <strong>1根</strong> + 原味混合坚果 <strong>${Math.round(f * 0.16)}g</strong>（约一小把）` },
       { type: "晚餐", emoji: "🍠", name: "慢碳鸡腿时蔬餐", text: `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong>（约一拳）+ 去皮去骨鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 大叶菜/生菜 <strong>250g</strong> + 油 4g` }
     ]
