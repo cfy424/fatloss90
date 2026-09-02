@@ -1,0 +1,1985 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FFF9F5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>我的90天减脂计划 · 专属助手</title>
+<style>
+:root {
+  --primary: #FF6B6B;
+  --primary-light: #FFEBEB;
+  --primary-dark: #E04D4D;
+  --accent-green: #10B981;
+  --accent-green-bg: #ECFDF5;
+  --accent-amber: #F59E0B;
+  --accent-amber-bg: #FEF3C7;
+  --accent-blue: #3B82F6;
+  --accent-blue-bg: #EFF6FF;
+  --accent-purple: #8B5CF6;
+  --accent-purple-bg: #F5F3FF;
+  
+  --bg-gradient: linear-gradient(180deg, #FFF6F0 0%, #FFFDF9 160px, #FDFBF7 100%);
+  --card-bg: #FFFFFF;
+  --card-border: #F3ECE2;
+  --text-main: #2D2722;
+  --text-sub: #7A7067;
+  --text-muted: #A3998E;
+  --shadow-sm: 0 2px 8px rgba(180, 140, 110, 0.06);
+  --shadow-md: 0 6px 20px rgba(180, 140, 110, 0.09);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding-bottom: calc(76px + var(--safe-bottom));
+}
+
+.container {
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 16px 14px 20px;
+}
+
+/* 顶部标题与状态栏 */
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.header-title-box h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #FF5757 0%, #FF8A5C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.header-title-box p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--text-sub);
+  font-weight: 500;
+}
+.sync-tag {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 99px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #CBD5E1;
+}
+.sync-dot.online { background: var(--accent-green); box-shadow: 0 0 6px rgba(16,185,129,0.6); }
+.sync-dot.syncing { background: var(--accent-amber); }
+
+/* 日期与周期控制条 */
+.top-controller-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.date-selector-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.date-input-custom {
+  border: 1px solid var(--card-border);
+  background: #FFFDF9;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+  outline: none;
+}
+.today-quick-btn {
+  font-size: 12px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border: none;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cycle-badge-btn {
+  border: none;
+  background: var(--accent-purple-bg);
+  color: var(--accent-purple);
+  padding: 6px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(139, 92, 246, 0.15);
+}
+.cycle-badge-btn.period {
+  background: #FFE4E6;
+  color: #E11D48;
+}
+
+/* 体重联动输入与目标卡片 */
+.weight-link-card {
+  background: linear-gradient(135deg, #FFF9F4 0%, #FFFFFF 100%);
+  border: 1px solid #FCE8DD;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 14px;
+}
+.weight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #F1E5DA;
+}
+.weight-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.weight-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.step-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #E2D6C8;
+  background: #FFF;
+  color: var(--text-main);
+  font-weight: bold;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.weight-input {
+  width: 68px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  border: 1px solid #E8D8CA;
+  border-radius: 8px;
+  padding: 4px 0;
+  background: #FFF;
+}
+.weight-unit {
+  font-size: 13px;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+/* 4格营养素小方块 */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.macro-cell {
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 10px 4px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.macro-cell::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+}
+.macro-cell.c-kcal::before { background: #FF6B6B; }
+.macro-cell.c-pro::before { background: #10B981; }
+.macro-cell.c-carb::before { background: #F59E0B; }
+.macro-cell.c-fat::before { background: #8B5CF6; }
+
+.macro-name { font-size: 11px; color: var(--text-sub); font-weight: 600; }
+.macro-val { font-size: 16px; font-weight: 800; margin: 3px 0 1px; color: var(--text-main); }
+.macro-desc { font-size: 10px; color: var(--text-muted); }
+
+/* 主模块内容容器 */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* 卡片通用 */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 14px;
+}
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 750;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+/* 喝水打卡条 */
+.water-card {
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+}
+.water-cups-row {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  flex-wrap: wrap;
+  margin: 10px 0 12px;
+}
+.water-cup-btn {
+  flex: 1;
+  min-width: 32px;
+  height: 38px;
+  background: #FFF;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #94A3B8;
+}
+.water-cup-btn.filled {
+  background: #0284C7;
+  color: #FFF;
+  border-color: #0284C7;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.3);
+}
+.water-text-val {
+  font-size: 14px;
+  font-weight: 750;
+  color: #0284C7;
+  white-space: nowrap;
+}
+.water-quick-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.water-qbtn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid #BAE6FD;
+  background: #FFF;
+  color: #0284C7;
+  cursor: pointer;
+}
+
+/* 训练动作打卡清单 */
+.exercise-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F5EFEB;
+}
+.exercise-item:last-child { border-bottom: none; }
+.check-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #D8CCC0;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: all 0.2s;
+  background: #FFF;
+  user-select: none;
+}
+.check-circle.checked {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #FFF;
+  box-shadow: 0 2px 6px rgba(16,185,129,0.35);
+}
+.ex-main { flex: 1; min-width: 0; }
+.ex-header-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.ex-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
+.ex-set-meta { font-size: 13px; font-weight: 700; color: var(--primary); }
+.ex-weight-rec { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+.ex-tips { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+.ex-note-input {
+  width: 100%;
+  border: 1px dashed #E2D5C8;
+  background: #FFFDF9;
+  border-radius: 6px;
+  font-size: 11px;
+  padding: 4px 8px;
+  margin-top: 5px;
+  color: var(--text-main);
+  outline: none;
+}
+
+/* 训练专用卡片快捷动作按钮 */
+.training-action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.action-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary-action {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+  color: #FFF;
+}
+.btn-amber-action {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFF;
+}
+
+/* 三餐打卡 */
+.meal-type-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.meal-tab-btn {
+  flex: 1;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: #FFF;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.meal-tab-btn.active {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border-color: #FDC7C7;
+}
+
+.meal-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F5EFEB;
+}
+.meal-block:last-child { border-bottom: none; }
+.meal-info { flex: 1; min-width: 0; }
+.meal-title-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+}
+.meal-content-text { font-size: 13px; color: var(--text-main); margin-top: 3px; line-height: 1.45; }
+
+/* 计时器模块 (Tab 2) */
+.timer-container {
+  text-align: center;
+  padding: 10px 0;
+}
+.timer-dial-outer {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  background: conic-gradient(var(--primary) calc(var(--p, 100) * 1%), #F1E7DD 0);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+  transition: background 0.1s linear;
+}
+.timer-dial-inner {
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timer-digits {
+  font-size: 46px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+  line-height: 1;
+}
+.timer-phase-lbl {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 6px;
+}
+.timer-presets {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.preset-chip {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--card-border);
+  background: #FFF;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.preset-chip.active {
+  background: var(--primary);
+  color: #FFF;
+  border-color: var(--primary);
+}
+.timer-controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.btn-round-ctrl {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+.btn-round-ctrl.play {
+  background: var(--accent-green);
+  color: #FFF;
+}
+.btn-round-ctrl.pause {
+  background: var(--accent-amber);
+  color: #FFF;
+}
+.btn-round-ctrl.reset {
+  background: #EDE4DA;
+  color: var(--text-sub);
+}
+
+/* 动感单车 HIIT 计时器 */
+.hiit-banner {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  color: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.hiit-phase-tag {
+  display: inline-block;
+  font-size: 13px;
+  padding: 4px 14px;
+  border-radius: 99px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.hiit-phase-tag.warm { background: #38BDF8; color: #082F49; }
+.hiit-phase-tag.sprint { background: #EF4444; color: #FFF; animation: pulse 1s infinite alternate; }
+.hiit-phase-tag.recover { background: #10B981; color: #064E3B; }
+.hiit-phase-tag.cool { background: #818CF8; color: #1E1B4B; }
+@keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+.hiit-timer-num {
+  font-size: 56px;
+  font-weight: 900;
+  font-family: monospace;
+  line-height: 1.1;
+  color: #F8FAFC;
+}
+.hiit-status-text {
+  font-size: 14px;
+  color: #94A3B8;
+  margin-top: 4px;
+}
+.hiit-round-progress {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px 0 16px;
+}
+.hiit-dot {
+  width: 14px;
+  height: 8px;
+  border-radius: 4px;
+  background: #334155;
+}
+.hiit-dot.done { background: #10B981; }
+.hiit-dot.current { background: #EF4444; width: 22px; }
+
+/* 趋势图与历史 (Tab 3) */
+.chart-container-box {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  margin: 10px 0;
+}
+canvas#weightChart {
+  width: 100% !important;
+  height: 100% !important;
+}
+.stat-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat-box {
+  background: #FFFDF9;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.stat-label { font-size: 11px; color: var(--text-sub); }
+.stat-val { font-size: 16px; font-weight: 800; color: var(--text-main); margin-top: 2px; }
+
+.history-list {
+  max-height: 240px;
+  overflow-y: auto;
+  border-top: 1px solid #F3ECE2;
+  margin-top: 8px;
+}
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #F5EEE6;
+  font-size: 13px;
+}
+.del-rec-btn {
+  color: #EF4444;
+  background: none;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* 周期与设置 (Tab 4) */
+.period-btn-lg {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #F43F5E 0%, #FB7185 100%);
+  color: #FFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #F5EFEB;
+}
+.setting-item label { font-size: 14px; font-weight: 600; color: var(--text-main); }
+.setting-item input {
+  border: 1px solid var(--card-border);
+  background: #FFFDF9;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  width: 120px;
+  text-align: right;
+  color: var(--text-main);
+}
+
+/* 底部常驻 Tab 导航栏 (手机极佳操作) */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(220, 205, 190, 0.5);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 10px calc(8px + var(--safe-bottom));
+  z-index: 999;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 12px;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+.nav-item.active {
+  color: var(--primary-dark);
+  background: var(--primary-light);
+}
+.nav-icon { font-size: 18px; line-height: 1; }
+
+/* 模态弹窗 */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-mask.open { display: flex; }
+.modal-box {
+  background: #FFF;
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+}
+.modal-box h3 { margin: 0 0 10px; font-size: 17px; }
+.modal-box p { font-size: 13.5px; color: var(--text-sub); margin: 0 0 16px; }
+.modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.modal-btn.cancel { background: #F1E7DD; color: var(--text-sub); }
+.modal-btn.confirm { background: #F43F5E; color: #FFF; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- 顶部状态栏 -->
+  <header class="header-bar">
+    <div class="header-title-box">
+      <h1>✨ 90天科学减脂 <span style="font-size:13px; font-weight:700; color:#FF6B6B; vertical-align:middle;">Day <span id="lblDayIndex">1</span></span></h1>
+      <p>谭成义碳水渐降 · 女性周期弹性 · 居家器械</p>
+    </div>
+    <div class="sync-tag">
+      <span class="sync-dot online" id="syncDot"></span>
+      <span id="syncText">已就绪</span>
+    </div>
+  </header>
+
+  <!-- 日期与周期控制 -->
+  <div class="top-controller-card">
+    <div class="date-selector-wrap">
+      <input type="date" id="selDate" class="date-input-custom">
+      <button class="today-quick-btn" id="btnToday">今天</button>
+    </div>
+    <button class="cycle-badge-btn" id="btnCycleInfo">
+      <span id="lblCyclePhase">🌸 排卵期</span>
+      <span id="lblCycleDay">D16</span>
+    </button>
+  </div>
+
+  <!-- 体重联动与 4 大宏量营养素卡片 -->
+  <div class="weight-link-card">
+    <div class="weight-row">
+      <div class="weight-title">
+        <span>⚖️ 晨重联动</span>
+        <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(自动联动营养素)</span>
+      </div>
+      <div class="weight-input-group">
+        <button class="step-btn" id="btnWeightMinus">-</button>
+        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="58.0">
+        <span class="weight-unit">kg</span>
+        <button class="step-btn" id="btnWeightPlus">+</button>
+      </div>
+    </div>
+    
+    <div class="macro-grid">
+      <div class="macro-cell c-kcal">
+        <div class="macro-name">目标热量</div>
+        <div class="macro-val" id="valKcal">1455</div>
+        <div class="macro-desc" id="descKcal">kcal</div>
+      </div>
+      <div class="macro-cell c-pro">
+        <div class="macro-name">蛋白质</div>
+        <div class="macro-val" id="valProtein">104g</div>
+        <div class="macro-desc">1.8g/kg</div>
+      </div>
+      <div class="macro-cell c-carb">
+        <div class="macro-name">碳水</div>
+        <div class="macro-val" id="valCarb">145g</div>
+        <div class="macro-desc" id="descCarb">2.5g/kg</div>
+      </div>
+      <div class="macro-cell c-fat">
+        <div class="macro-name">脂肪</div>
+        <div class="macro-val" id="valFat">52g</div>
+        <div class="macro-desc">0.9g/kg</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 1: 今日安排 (打卡中心) -->
+  <main id="tab1" class="tab-content active">
+    
+    <!-- 喝水打卡 -->
+    <section class="card water-card">
+      <div class="card-title-row">
+        <div class="card-title">💧 今日喝水打卡 <span class="card-subtitle">(目标 2000ml)</span></div>
+        <div class="water-text-val"><span id="lblWaterVal">0</span> / 2000 ml</div>
+      </div>
+      <div class="water-cups-row" id="waterCups"></div>
+      <div class="water-quick-btns">
+        <button class="water-qbtn" id="btnAdd250">+250ml</button>
+        <button class="water-qbtn" id="btnResetWater">重置</button>
+      </div>
+    </section>
+
+    <!-- 训练打卡 -->
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">🏋️ 今日训练清单 <span class="card-subtitle" id="lblWorkoutTitle">下肢力量 A</span></div>
+        <span id="lblWorkoutDoneBadge" style="font-size:12px; font-weight:700; color:var(--text-muted);">0/6 完成</span>
+      </div>
+      <div id="exerciseList"></div>
+      <div class="training-action-row">
+        <button class="action-btn btn-primary-action" id="btnGoRestTimer">⏱️ 组间休息计时器</button>
+        <button class="action-btn btn-amber-action" id="btnGoHiitTimer">🚴 单车间歇助手</button>
+      </div>
+    </section>
+
+    <!-- 三餐打卡 -->
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">🍱 今日三餐打卡 <span class="card-subtitle" id="lblMealDay">Day A</span></div>
+        <div class="meal-type-nav">
+          <button class="meal-tab-btn" data-mealday="Day A">Day A</button>
+          <button class="meal-tab-btn" data-mealday="Day B">Day B</button>
+          <button class="meal-tab-btn" data-mealday="Day C">Day C</button>
+        </div>
+      </div>
+      <div id="mealList"></div>
+      <div style="font-size:12px; color:var(--text-muted); margin-top:10px; background:#FAF6F0; padding:8px 10px; border-radius:8px;">
+        💡 份量掌心口诀：米饭一拳（约130-140g）、肉类一掌（约130-150g）、蔬菜两拳（250g）、油脂一拇指（5g）。
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Tab 2: 训练与计时器 -->
+  <main id="tab2" class="tab-content">
+    
+    <!-- 力量训练组间休息倒计时 -->
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">⏱️ 力量组间休息计时器</div>
+        <span class="card-subtitle">控制节奏 · 保护心率</span>
+      </div>
+      <div class="timer-container">
+        <div class="timer-dial-outer" id="restDial" style="--p: 100;">
+          <div class="timer-dial-inner">
+            <div class="timer-digits" id="restDigits">60</div>
+            <div class="timer-phase-lbl" id="restPhaseLbl">准备休息</div>
+          </div>
+        </div>
+        <div class="timer-presets">
+          <button class="preset-chip" data-time="45">45 秒</button>
+          <button class="preset-chip active" data-time="60">60 秒</button>
+          <button class="preset-chip" data-time="90">90 秒</button>
+          <button class="preset-chip" data-time="120">120 秒</button>
+        </div>
+        <div class="timer-controls-row">
+          <button class="btn-round-ctrl reset" id="btnRestReset">↺</button>
+          <button class="btn-round-ctrl play" id="btnRestPlay">▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 动感单车 HIIT 计时器 -->
+    <section class="hiit-banner">
+      <div class="card-title-row" style="margin-bottom:6px;">
+        <span style="font-size:15px; font-weight:800;">🚴 动感单车间歇 (HIIT) 专用助手</span>
+        <span style="font-size:12px; color:#94A3B8;" id="hiitTotalRemain">总时长 30:00</span>
+      </div>
+      <span class="hiit-phase-tag warm" id="hiitPhaseTag">热身阶段 (5 min)</span>
+      <div class="hiit-timer-num" id="hiitTimerNum">05:00</div>
+      <div class="hiit-status-text" id="hiitStatusText">踏频 80-90，中低阻力微出汗</div>
+      
+      <div class="hiit-round-progress" id="hiitDots"></div>
+
+      <div class="timer-controls-row">
+        <button class="btn-round-ctrl reset" id="btnHiitReset">↺</button>
+        <button class="btn-round-ctrl play" id="btnHiitPlay">▶</button>
+        <button class="btn-round-ctrl reset" id="btnHiitSkip" title="跳到下一阶段">⏭</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Tab 3: 数据与趋势 -->
+  <main id="tab3" class="tab-content">
+    
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">📈 体重趋势与 7 天均线</div>
+        <span class="card-subtitle">过滤水分波动</span>
+      </div>
+      <div class="stat-summary-row">
+        <div class="stat-box">
+          <div class="stat-label">初始体重</div>
+          <div class="stat-val" id="statStartW">58.0 kg</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">最新 7天均线</div>
+          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">58.0 kg</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">阶段目标</div>
+          <div class="stat-val" style="color:var(--primary);">53.5 kg</div>
+        </div>
+      </div>
+
+      <div class="chart-container-box">
+        <canvas id="weightChart"></canvas>
+      </div>
+      <div style="font-size:11.5px; color:var(--text-muted); text-align:center;">
+        🟢 绿色实线：7 天滑动平均趋势 ｜ 🟠 橙色点：单日晨重
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">📝 历史记录明细</div>
+        <span class="card-subtitle">按日期记录</span>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+
+  </main>
+
+  <!-- Tab 4: 周期与设置 -->
+  <main id="tab4" class="tab-content">
+    
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">🌸 生理周期智能校准</div>
+      </div>
+      <button class="period-btn-lg" id="btnPeriodCalib">
+        🩸 今天来月经了（一键重置为 D1）
+      </button>
+      <div style="font-size:12.5px; color:var(--text-sub); line-height:1.6;">
+        点击后，系统将把今天设定为本次月经 D1，后续 28 天的「经期、卵泡期、排卵期、黄体期」及对应的热量与训练安排将自动对齐顺延！
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-title-row">
+        <div class="card-title">⚙️ 个人基本参数设置</div>
+      </div>
+      <div class="settings-group">
+        <div class="setting-item">
+          <label>身高 (cm)</label>
+          <input type="number" id="cfgHeight" value="164">
+        </div>
+        <div class="setting-item">
+          <label>年龄</label>
+          <input type="number" id="cfgAge" value="29">
+        </div>
+        <div class="setting-item">
+          <label>周期天数 (天)</label>
+          <input type="number" id="cfgCycleLen" value="28">
+        </div>
+        <div class="setting-item">
+          <label>计划起始日期</label>
+          <input type="date" id="cfgStartDate" value="2026-09-02">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- 底部常驻导航栏 -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-tab="tab1">
+    <span class="nav-icon">📅</span>
+    <span>今日计划</span>
+  </button>
+  <button class="nav-item" data-tab="tab2">
+    <span class="nav-icon">⏱️</span>
+    <span>训练计时</span>
+  </button>
+  <button class="nav-item" data-tab="tab3">
+    <span class="nav-icon">📈</span>
+    <span>趋势图表</span>
+  </button>
+  <button class="nav-item" data-tab="tab4">
+    <span class="nav-icon">⚙️</span>
+    <span>周期设置</span>
+  </button>
+</nav>
+
+<!-- 周期校准确认弹窗 -->
+<div class="modal-mask" id="periodModal">
+  <div class="modal-box">
+    <h3>🌸 确认对齐经期第一天？</h3>
+    <p>系统将把选中的日期（<strong id="modalDateStr"></strong>）设为本次月经 D1，并自动调整接下来一个月的减脂阶段与热量安排。</p>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" id="btnModalCancel">取消</button>
+      <button class="modal-btn confirm" id="btnModalConfirm">确认对齐</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ================== 常量与基础数据 ================== */
+const STORE_KEY = "fatloss_app_v3_state";
+const API_URL = "https://fatloss-api-livid.vercel.app";
+const DAY_MS = 86400000;
+const CARB_LADDER = [2.5, 2.4, 2.2, 2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.5];
+
+const EXERCISES_DB = {
+  "下肢力量 A": [
+    { name: "高脚杯深蹲", emoji: "🏋️", detail: "3 × 12-15", weight: "哑铃 6-8kg", tips: "脚跟踩稳，膝盖对准脚尖，核心收紧" },
+    { name: "罗马尼亚硬拉", emoji: "🏋️", detail: "3 × 12", weight: "各 4-6kg", tips: "髋部后移、背部平直，腘绳肌拉伸" },
+    { name: "负重臀桥", emoji: "🍑", detail: "3 × 12-15", weight: "6-10kg 放髋上", tips: "顶峰停顿 1-2 秒，臀部发力不顶腰" },
+    { name: "箭步蹲", emoji: "🦵", detail: "2 × 10/侧", weight: "各 3-5kg", tips: "前膝不过脚尖，重心垂直下放" },
+    { name: "弹力带侧向走", emoji: "🩹", detail: "3 × 15", weight: "轻-中阻力", tips: "半蹲横向移动，感受臀中肌发力" },
+    { name: "平板支撑", emoji: "🧱", detail: "3 × 30s", weight: "自重", tips: "身体一条直线，严禁塌腰" }
+  ],
+  "上肢力量 B": [
+    { name: "哑铃卧推", emoji: "🏋️", detail: "3 × 10-12", weight: "各 3-5kg", tips: "肩胛下沉，慢下放约 2 秒" },
+    { name: "单臂哑铃划船", emoji: "💪", detail: "3 × 12/侧", weight: "6-8kg", tips: "背平直，肘贴近身体向后拉" },
+    { name: "哑铃肩推", emoji: "🏋️", detail: "3 × 10-12", weight: "各 2-4kg", tips: "核心收紧，不借力不塌腰" },
+    { name: "弹力带面拉", emoji: "🩹", detail: "3 × 15-20", weight: "轻-中阻力", tips: "拉向面部，肩胛向后收紧" },
+    { name: "二头弯举", emoji: "💪", detail: "2 × 12-15", weight: "各 2-3kg", tips: "肘部固定贴肋，身体不晃动" },
+    { name: "跪姿俯卧撑", emoji: "🧱", detail: "2 × 8-12", weight: "自重", tips: "身体一条直线，胸口贴近地面" }
+  ],
+  "动感单车 · 稳定": [
+    { name: "动感单车稳态燃脂", emoji: "🚴", detail: "30-40 分钟", weight: "中低阻力", tips: "强度保持在“能说话但微喘”最佳燃脂区间" }
+  ],
+  "动感单车 · 间歇": [
+    { name: "动感单车 HIIT 间歇", emoji: "🚴", detail: "约 30 分钟", weight: "热身5m + 6-8轮(冲刺1m/恢复2m) + 放松5m", tips: "冲刺用八成力全力蹬，恢复期轻松慢踩" }
+  ]
+};
+
+const MEALS_DB = {
+  "Day A": {
+    kcal: "约 1455 kcal", protein: "约 101g",
+    items: [
+      { type: "早餐", emoji: "🥣", text: "燕麦 45g（约4平勺）+ 鸡蛋 2 个 + 无糖豆浆 250ml" },
+      { type: "午餐", emoji: "🍚", text: "米饭 140g（约一小拳）+ 鸡胸肉 150g（约一掌）+ 西兰花 250g（约两拳）+ 油 5g" },
+      { type: "加餐", emoji: "🍎", text: "苹果 1 个（约一拳）+ 无糖酸奶 60g（约半杯）" },
+      { type: "晚餐", emoji: "🥗", text: "米饭 120g + 鱼/虾仁 150g + 豆腐 120g（约半盒）+ 绿叶菜 250g + 油 5g" }
+    ]
+  },
+  "Day B": {
+    kcal: "约 1445 kcal", protein: "约 96g",
+    items: [
+      { type: "早餐", emoji: "🍞", text: "全麦吐司 2 片（约手掌大）+ 鸡蛋 2 个 + 低脂牛奶 200ml" },
+      { type: "午餐", emoji: "🥩", text: "杂粮饭 140g（约一小拳）+ 瘦牛肉 120g（约扑克牌大）+ 彩椒/黄瓜 250g + 油 5g" },
+      { type: "加餐", emoji: "🍌", text: "香蕉 1 根（约一拳）+ 原味坚果 8g（约一小把）" },
+      { type: "晚餐", emoji: "🍠", text: "红薯 170g（约一拳）+ 去皮鸡腿肉 130g（约一掌）+ 大叶菜 250g + 油 4g" }
+    ]
+  },
+  "Day C": {
+    kcal: "约 1370 kcal", protein: "约 95g",
+    items: [
+      { type: "早餐", emoji: "🥣", text: "燕麦 40g（约4平勺）+ 全蛋 1 个 + 蛋白 2 个 + 无糖酸奶 100g" },
+      { type: "午餐", emoji: "🐟", text: "米饭 130g（约小拳少一点）+ 三文鱼/鲈鱼 150g（约一掌）+ 芦笋/西葫芦 250g + 油 4g" },
+      { type: "加餐", emoji: "🫐", text: "蓝莓/草莓 150g（约一拳）+ 原味坚果 8g（约一小把）" },
+      { type: "晚餐", emoji: "🌽", text: "玉米 180g（约一根）+ 瘦猪肉/鸡胸 120g（约一掌）+ 菠菜 300g 蒜炒 + 豆腐 100g + 油 4g" }
+    ]
+  }
+};
+
+const WEEK_PLAN = [
+  { day: "周一", type: "s", title: "下肢力量 A" },
+  { day: "周二", type: "c", title: "动感单车 · 稳定" },
+  { day: "周三", type: "s", title: "上肢力量 B" },
+  { day: "周四", type: "c", title: "动感单车 · 间歇" },
+  { day: "周五", type: "c", title: "动感单车 · 稳定" },
+  { day: "周六", type: "c", title: "动感单车 · 稳定" },
+  { day: "周日", type: "r", title: "休息日：散步 20-30 分钟 + 全身拉伸" }
+];
+
+/* ================== 状态管理 ================== */
+let app = {
+  currentDate: fmtDate(new Date()),
+  weight: 58.0,
+  config: {
+    height: 164,
+    age: 29,
+    startDate: "2026-09-02",
+    periodBaseline: "2026-08-18",
+    cycleLen: 28
+  },
+  logs: {}, // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, notes: {} } }
+  activeMealDay: null
+};
+
+function loadLocalData() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      app = Object.assign(app, parsed);
+    }
+  } catch (e) {}
+}
+
+function saveLocalData() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(app));
+  } catch (e) {}
+}
+
+function getDayLog(dateStr) {
+  if (!app.logs[dateStr]) {
+    app.logs[dateStr] = {
+      weight: app.weight,
+      water: 0,
+      exercises: {},
+      exerciseNotes: {},
+      meals: {}
+    };
+  }
+  return app.logs[dateStr];
+}
+
+/* ================== 日期与计算函数 ================== */
+function fmtDate(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function parseDate(s) {
+  const parts = s.split("-").map(Number);
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+function addDays(d, n) {
+  const x = new Date(d);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+function diffDays(aStr, bStr) {
+  return Math.round((parseDate(aStr) - parseDate(bStr)) / DAY_MS);
+}
+
+// 生理周期计算
+function getCycleInfo(dateStr) {
+  const d = parseDate(dateStr);
+  const base = parseDate(app.config.periodBaseline);
+  const diff = Math.round((d - base) / DAY_MS);
+  const cycleLen = app.config.cycleLen || 28;
+  const day = ((diff % cycleLen) + cycleLen) % cycleLen + 1;
+  let phase = "黄体期";
+  if (day <= 6) phase = "经期";
+  else if (day <= 15) phase = "卵泡期";
+  else if (day <= 18) phase = "排卵期";
+  return { day, phase };
+}
+
+// 宏量营养素计算 (联动体重与周期)
+function calcMacros(weight, dayIndex, cycle) {
+  const p = Math.round(weight * 1.8);
+  const f = Math.round(weight * 0.9);
+  const ladderIdx = Math.min(Math.floor(dayIndex / 10), CARB_LADDER.length - 1);
+  const carbRatio = CARB_LADDER[Math.max(0, ladderIdx)];
+  let c = Math.max(100, Math.round(weight * carbRatio));
+  let kcal = p * 4 + f * 9 + c * 4;
+
+  let carbDesc = carbRatio + "g/kg";
+  let kcalDesc = "正常赤字";
+
+  if (cycle.phase === "经期") {
+    c = Math.round(c * 1.14);
+    kcal = Math.round(kcal * 1.09);
+    kcalDesc = "经期放宽+100";
+  } else if (cycle.day >= 24) {
+    c = Math.round(c * 1.08);
+    kcal = Math.round(kcal * 1.04);
+    kcalDesc = "黄体后期稍加";
+  }
+
+  return { p, f, c, kcal, carbDesc, kcalDesc };
+}
+
+/* ================== 音频提示音 (Web Audio API 原生合成) ================== */
+function playBeep(freq = 780, duration = 0.18, type = "sine") {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {}
+}
+
+function playCheerTone() {
+  playBeep(523.25, 0.1);
+  setTimeout(() => playBeep(659.25, 0.1), 120);
+  setTimeout(() => playBeep(783.99, 0.25), 240);
+  if (navigator.vibrate) navigator.vibrate([80, 50, 120]);
+}
+
+/* ================== 页面渲染逻辑 ================== */
+function renderAll() {
+  const curDate = app.currentDate;
+  const dayLog = getDayLog(curDate);
+  const curWeight = dayLog.weight || app.weight;
+
+  // 1. 顶部日期与天数
+  document.getElementById("selDate").value = curDate;
+  const dayIdx = Math.max(0, diffDays(curDate, app.config.startDate));
+  document.getElementById("lblDayIndex").textContent = dayIdx + 1;
+
+  // 2. 周期状态
+  const cycle = getCycleInfo(curDate);
+  const cycleBtn = document.getElementById("btnCycleInfo");
+  document.getElementById("lblCyclePhase").textContent = 
+    (cycle.phase === "经期" ? "🩸 " : cycle.phase === "卵泡期" ? "🌿 " : cycle.phase === "排卵期" ? "🌸 " : "🍂 ") + cycle.phase;
+  document.getElementById("lblCycleDay").textContent = "D" + cycle.day;
+  if (cycle.phase === "经期") {
+    cycleBtn.classList.add("period");
+  } else {
+    cycleBtn.classList.remove("period");
+  }
+
+  // 3. 体重与营养素
+  document.getElementById("inpWeight").value = curWeight.toFixed(1);
+  const macros = calcMacros(curWeight, dayIdx, cycle);
+  document.getElementById("valKcal").textContent = macros.kcal;
+  document.getElementById("descKcal").textContent = macros.kcalDesc;
+  document.getElementById("valProtein").textContent = macros.p + "g";
+  document.getElementById("valCarb").textContent = macros.c + "g";
+  document.getElementById("descCarb").textContent = macros.carbDesc;
+  document.getElementById("valFat").textContent = macros.f + "g";
+
+  // 4. 喝水打卡
+  renderWater(dayLog.water || 0);
+
+  // 5. 训练动作列表
+  renderTraining(curDate, cycle, dayLog);
+
+  // 6. 三餐列表
+  renderMeals(dayIdx, dayLog);
+
+  // 7. 设置项反显
+  document.getElementById("cfgHeight").value = app.config.height;
+  document.getElementById("cfgAge").value = app.config.age;
+  document.getElementById("cfgCycleLen").value = app.config.cycleLen;
+  document.getElementById("cfgStartDate").value = app.config.startDate;
+
+  // 8. 图表与历史
+  renderChartAndHistory();
+}
+
+/* ================== 喝水模块 ================== */
+function renderWater(val) {
+  document.getElementById("lblWaterVal").textContent = val;
+  const cupsContainer = document.getElementById("waterCups");
+  cupsContainer.innerHTML = "";
+  const totalCups = 8; // 8 * 250ml = 2000ml
+  const filledCount = Math.floor(val / 250);
+
+  for (let i = 0; i < totalCups; i++) {
+    const btn = document.createElement("button");
+    btn.className = "water-cup-btn" + (i < filledCount ? " filled" : "");
+    btn.innerHTML = `<span>💧</span><span style="font-size:9px;">${(i + 1) * 250}</span>`;
+    btn.onclick = () => {
+      const newWater = (i + 1) * 250;
+      updateWater(newWater);
+    };
+    cupsContainer.appendChild(btn);
+  }
+}
+
+function updateWater(newVal) {
+  const dayLog = getDayLog(app.currentDate);
+  dayLog.water = Math.max(0, Math.min(3000, newVal));
+  saveLocalData();
+  renderWater(dayLog.water);
+  if (dayLog.water >= 2000) playCheerTone();
+}
+
+/* ================== 训练模块 ================== */
+function renderTraining(dateStr, cycle, dayLog) {
+  const d = parseDate(dateStr);
+  const weekDayIdx = (d.getDay() + 6) % 7;
+  const plan = WEEK_PLAN[weekDayIdx];
+  const listEl = document.getElementById("exerciseList");
+  listEl.innerHTML = "";
+
+  if (cycle.phase === "经期") {
+    document.getElementById("lblWorkoutTitle").textContent = "经期轻活动模式";
+    document.getElementById("lblWorkoutDoneBadge").textContent = "温和恢复";
+    listEl.innerHTML = `
+      <div style="background:var(--accent-amber-bg); color:var(--accent-amber); padding:12px; border-radius:12px; font-size:13.5px; line-height:1.5;">
+        🩸 <strong>经期专属建议：</strong> 暂停高强度力量训练，以散步 20-30 分钟、全身拉伸或动感单车 20 分钟慢速踩踏为主，放松骨盆与下背部。
+      </div>
+    `;
+    return;
+  }
+
+  if (plan.type === "r") {
+    document.getElementById("lblWorkoutTitle").textContent = plan.title;
+    document.getElementById("lblWorkoutDoneBadge").textContent = "全身放松";
+    listEl.innerHTML = `
+      <div style="background:var(--accent-green-bg); color:var(--accent-green); padding:12px; border-radius:12px; font-size:13.5px;">
+        🌿 <strong>今日完全休息：</strong> 建议户外快步散步 20-30 分钟 + 全身柔韧拉伸，帮助肌肉超量恢复！
+      </div>
+    `;
+    return;
+  }
+
+  document.getElementById("lblWorkoutTitle").textContent = plan.title;
+  const exercises = EXERCISES_DB[plan.title] || [];
+  let doneCount = 0;
+
+  exercises.forEach((ex, idx) => {
+    const isDone = !!dayLog.exercises[ex.name];
+    if (isDone) doneCount++;
+    const note = (dayLog.exerciseNotes && dayLog.exerciseNotes[ex.name]) || "";
+
+    const row = document.createElement("div");
+    row.className = "exercise-item";
+    row.innerHTML = `
+      <div class="check-circle ${isDone ? "checked" : ""}" data-idx="${idx}">✓</div>
+      <div class="ex-main">
+        <div class="ex-header-line">
+          <span class="ex-name">${ex.name}</span>
+          <span class="ex-set-meta">${ex.detail}</span>
+        </div>
+        <div class="ex-weight-rec">💡 建议重量: ${ex.weight}</div>
+        <div class="ex-tips">${ex.tips}</div>
+        <input type="text" class="ex-note-input" placeholder="记录今日实测重量/组数（如：8kg×15次）" value="${note}">
+      </div>
+    `;
+
+    // 勾选打卡
+    row.querySelector(".check-circle").onclick = () => {
+      dayLog.exercises[ex.name] = !dayLog.exercises[ex.name];
+      saveLocalData();
+      if (dayLog.exercises[ex.name]) playCheerTone();
+      renderTraining(dateStr, cycle, dayLog);
+    };
+
+    // 记录重量备注
+    const inpNote = row.querySelector(".ex-note-input");
+    inpNote.onchange = () => {
+      if (!dayLog.exerciseNotes) dayLog.exerciseNotes = {};
+      dayLog.exerciseNotes[ex.name] = inpNote.value;
+      saveLocalData();
+    };
+
+    listEl.appendChild(row);
+  });
+
+  document.getElementById("lblWorkoutDoneBadge").textContent = `${doneCount}/${exercises.length} 完成`;
+  if (doneCount > 0 && doneCount === exercises.length) {
+    document.getElementById("lblWorkoutDoneBadge").style.color = "var(--accent-green)";
+  } else {
+    document.getElementById("lblWorkoutDoneBadge").style.color = "var(--text-muted)";
+  }
+}
+
+/* ================== 三餐打卡模块 ================== */
+function renderMeals(dayIdx, dayLog) {
+  const defaultMealDay = ["Day A", "Day B", "Day C"][dayIdx % 3];
+  const activeDay = app.activeMealDay || defaultMealDay;
+  document.getElementById("lblMealDay").textContent = activeDay;
+
+  // 切换三餐 Tab 按钮高亮
+  document.querySelectorAll(".meal-tab-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.mealday === activeDay);
+  });
+
+  const mealData = MEALS_DB[activeDay];
+  const listEl = document.getElementById("mealList");
+  listEl.innerHTML = "";
+
+  mealData.items.forEach((item) => {
+    const isDone = !!(dayLog.meals && dayLog.meals[item.type]);
+    const block = document.createElement("div");
+    block.className = "meal-block";
+    block.innerHTML = `
+      <div class="check-circle ${isDone ? "checked" : ""}">✓</div>
+      <div class="meal-info">
+        <div class="meal-title-line">
+          <span>${item.emoji} ${item.type}</span>
+        </div>
+        <div class="meal-content-text">${item.text}</div>
+      </div>
+    `;
+
+    block.querySelector(".check-circle").onclick = () => {
+      if (!dayLog.meals) dayLog.meals = {};
+      dayLog.meals[item.type] = !dayLog.meals[item.type];
+      saveLocalData();
+      if (dayLog.meals[item.type]) playCheerTone();
+      renderMeals(dayIdx, dayLog);
+    };
+
+    listEl.appendChild(block);
+  });
+}
+
+/* ================== 组间休息计时器 ================== */
+let restTimer = {
+  total: 60,
+  remain: 60,
+  intervalId: null,
+  running: false
+};
+
+function initRestTimer() {
+  const digitsEl = document.getElementById("restDigits");
+  const dialEl = document.getElementById("restDial");
+  const btnPlay = document.getElementById("btnRestPlay");
+  const btnReset = document.getElementById("btnRestReset");
+
+  function updateDisplay() {
+    digitsEl.textContent = restTimer.remain;
+    const progress = (restTimer.remain / restTimer.total) * 100;
+    dialEl.style.setProperty("--p", progress);
+  }
+
+  function tick() {
+    if (restTimer.remain > 0) {
+      restTimer.remain--;
+      updateDisplay();
+      if (restTimer.remain <= 3 && restTimer.remain > 0) {
+        playBeep(440, 0.1);
+      } else if (restTimer.remain === 0) {
+        playCheerTone();
+        document.getElementById("restPhaseLbl").textContent = "休息结束！开练 💪";
+        stop();
+      }
+    }
+  }
+
+  function start() {
+    if (restTimer.running) return;
+    restTimer.running = true;
+    btnPlay.textContent = "❚❚";
+    btnPlay.classList.replace("play", "pause");
+    document.getElementById("restPhaseLbl").textContent = "正在休息…";
+    restTimer.intervalId = setInterval(tick, 1000);
+  }
+
+  function stop() {
+    restTimer.running = false;
+    btnPlay.textContent = "▶";
+    btnPlay.classList.replace("pause", "play");
+    clearInterval(restTimer.intervalId);
+  }
+
+  btnPlay.onclick = () => {
+    if (restTimer.running) stop();
+    else {
+      if (restTimer.remain === 0) restTimer.remain = restTimer.total;
+      start();
+    }
+  };
+
+  btnReset.onclick = () => {
+    stop();
+    restTimer.remain = restTimer.total;
+    document.getElementById("restPhaseLbl").textContent = "准备休息";
+    updateDisplay();
+  };
+
+  document.querySelectorAll(".preset-chip").forEach(chip => {
+    chip.onclick = () => {
+      document.querySelectorAll(".preset-chip").forEach(c => c.classList.remove("active"));
+      chip.classList.add("active");
+      const sec = Number(chip.dataset.time);
+      restTimer.total = sec;
+      restTimer.remain = sec;
+      stop();
+      document.getElementById("restPhaseLbl").textContent = "准备休息";
+      updateDisplay();
+    };
+  });
+}
+
+/* ================== 动感单车 HIIT 计时器 ================== */
+const HIIT_CONFIG = {
+  warmupSec: 300, // 5 min
+  sprintSec: 60,  // 1 min
+  recoverSec: 120, // 2 min
+  cooldownSec: 300, // 5 min
+  rounds: 6
+};
+
+let hiitState = {
+  running: false,
+  phase: "warmup", // warmup -> sprint/recover (x6) -> cooldown -> done
+  currentRound: 1,
+  remainSec: 300,
+  timerId: null
+};
+
+function fmtTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function initHiitTimer() {
+  const numEl = document.getElementById("hiitTimerNum");
+  const tagEl = document.getElementById("hiitPhaseTag");
+  const statusEl = document.getElementById("hiitStatusText");
+  const dotsEl = document.getElementById("hiitDots");
+  const btnPlay = document.getElementById("btnHiitPlay");
+  const btnReset = document.getElementById("btnHiitReset");
+  const btnSkip = document.getElementById("btnHiitSkip");
+
+  function renderHiitUI() {
+    numEl.textContent = fmtTime(hiitState.remainSec);
+    dotsEl.innerHTML = "";
+    for (let r = 1; r <= HIIT_CONFIG.rounds; r++) {
+      const dot = document.createElement("div");
+      dot.className = "hiit-dot";
+      if (r < hiitState.currentRound) dot.classList.add("done");
+      else if (r === hiitState.currentRound && (hiitState.phase === "sprint" || hiitState.phase === "recover")) {
+        dot.classList.add("current");
+      }
+      dotsEl.appendChild(dot);
+    }
+
+    if (hiitState.phase === "warmup") {
+      tagEl.className = "hiit-phase-tag warm";
+      tagEl.textContent = "热身阶段 (5 min)";
+      statusEl.textContent = "踏频 80-90，低阻力唤醒心肺与膝盖关节";
+    } else if (hiitState.phase === "sprint") {
+      tagEl.className = "hiit-phase-tag sprint";
+      tagEl.textContent = `第 ${hiitState.currentRound}/${HIIT_CONFIG.rounds} 轮 · 冲刺 🔥 (1 min)`;
+      statusEl.textContent = "加阻力！站姿或坐姿全力踩踏！冲刺！";
+    } else if (hiitState.phase === "recover") {
+      tagEl.className = "hiit-phase-tag recover";
+      tagEl.textContent = `第 ${hiitState.currentRound}/${HIIT_CONFIG.rounds} 轮 · 恢复 🧘 (2 min)`;
+      statusEl.textContent = "调低阻力，深呼吸，平稳轻踩恢复心率";
+    } else if (hiitState.phase === "cooldown") {
+      tagEl.className = "hiit-phase-tag cool";
+      tagEl.textContent = "放松冷身 (5 min)";
+      statusEl.textContent = "极轻阻力慢踩，逐渐降低心率，准备拉伸";
+    } else {
+      tagEl.className = "hiit-phase-tag recover";
+      tagEl.textContent = "训练完成 🎉";
+      statusEl.textContent = "太棒了！今日间歇单车已圆满达成！";
+    }
+  }
+
+  function advancePhase() {
+    if (hiitState.phase === "warmup") {
+      hiitState.phase = "sprint";
+      hiitState.currentRound = 1;
+      hiitState.remainSec = HIIT_CONFIG.sprintSec;
+      playCheerTone();
+    } else if (hiitState.phase === "sprint") {
+      hiitState.phase = "recover";
+      hiitState.remainSec = HIIT_CONFIG.recoverSec;
+      playBeep(600, 0.2);
+    } else if (hiitState.phase === "recover") {
+      if (hiitState.currentRound < HIIT_CONFIG.rounds) {
+        hiitState.currentRound++;
+        hiitState.phase = "sprint";
+        hiitState.remainSec = HIIT_CONFIG.sprintSec;
+        playCheerTone();
+      } else {
+        hiitState.phase = "cooldown";
+        hiitState.remainSec = HIIT_CONFIG.cooldownSec;
+        playCheerTone();
+      }
+    } else if (hiitState.phase === "cooldown") {
+      hiitState.phase = "done";
+      hiitState.remainSec = 0;
+      stopHiit();
+      playCheerTone();
+    }
+    renderHiitUI();
+  }
+
+  function hiitTick() {
+    if (hiitState.remainSec > 0) {
+      hiitState.remainSec--;
+      if (hiitState.remainSec <= 3 && hiitState.remainSec > 0) playBeep(880, 0.1);
+      renderHiitUI();
+    } else {
+      advancePhase();
+    }
+  }
+
+  function startHiit() {
+    if (hiitState.running) return;
+    hiitState.running = true;
+    btnPlay.textContent = "❚❚";
+    btnPlay.classList.replace("play", "pause");
+    hiitState.timerId = setInterval(hiitTick, 1000);
+  }
+
+  function stopHiit() {
+    hiitState.running = false;
+    btnPlay.textContent = "▶";
+    btnPlay.classList.replace("pause", "play");
+    clearInterval(hiitState.timerId);
+  }
+
+  btnPlay.onclick = () => {
+    if (hiitState.running) stopHiit();
+    else startHiit();
+  };
+
+  btnReset.onclick = () => {
+    stopHiit();
+    hiitState.phase = "warmup";
+    hiitState.currentRound = 1;
+    hiitState.remainSec = HIIT_CONFIG.warmupSec;
+    renderHiitUI();
+  };
+
+  btnSkip.onclick = advancePhase;
+  renderHiitUI();
+}
+
+/* ================== 体重与腰围趋势图表 (Canvas 自绘制) ================== */
+function renderChartAndHistory() {
+  const canvas = document.getElementById("weightChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const w = rect.width;
+  const h = rect.height;
+
+  // 整理历史记录
+  const dates = Object.keys(app.logs).sort();
+  const points = [];
+  dates.forEach(d => {
+    const l = app.logs[d];
+    if (l && typeof l.weight === "number" && l.weight > 30) {
+      points.push({ date: d, weight: l.weight });
+    }
+  });
+
+  if (points.length === 0) {
+    points.push({ date: app.config.startDate, weight: app.weight });
+  }
+
+  // 计算 7 天滑动平均
+  const avgPoints = [];
+  for (let i = 0; i < points.length; i++) {
+    const start = Math.max(0, i - 6);
+    const slice = points.slice(start, i + 1);
+    const avg = slice.reduce((sum, p) => sum + p.weight, 0) / slice.length;
+    avgPoints.push({ date: points[i].date, weight: avg });
+  }
+
+  const latestAvg = avgPoints[avgPoints.length - 1].weight;
+  document.getElementById("statStartW").textContent = (points[0].weight || 58).toFixed(1) + " kg";
+  document.getElementById("statAvgW").textContent = latestAvg.toFixed(1) + " kg";
+
+  // 坐标范围
+  const allWeights = points.map(p => p.weight).concat(53.5);
+  const minW = Math.floor(Math.min(...allWeights) - 0.5);
+  const maxW = Math.ceil(Math.max(...allWeights) + 0.5);
+
+  const padLeft = 36;
+  const padRight = 16;
+  const padTop = 16;
+  const padBottom = 26;
+
+  const chartW = w - padLeft - padRight;
+  const chartH = h - padTop - padBottom;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // 背景网格线
+  ctx.strokeStyle = "#F1E8DF";
+  ctx.lineWidth = 1;
+  ctx.fillStyle = "#A89E91";
+  ctx.font = "10px sans-serif";
+  ctx.textAlign = "right";
+
+  const gridSteps = 4;
+  for (let i = 0; i <= gridSteps; i++) {
+    const yVal = minW + (maxW - minW) * (i / gridSteps);
+    const y = padTop + chartH - (i / gridSteps) * chartH;
+    ctx.beginPath();
+    ctx.moveTo(padLeft, y);
+    ctx.lineTo(w - padRight, y);
+    ctx.stroke();
+    ctx.fillText(yVal.toFixed(1), padLeft - 6, y + 3);
+  }
+
+  function getX(idx) {
+    if (points.length <= 1) return padLeft + chartW / 2;
+    return padLeft + (idx / (points.length - 1)) * chartW;
+  }
+  function getY(weight) {
+    return padTop + chartH - ((weight - minW) / (maxW - minW)) * chartH;
+  }
+
+  // 目标参考虚线 (53.5kg)
+  const targetY = getY(53.5);
+  if (targetY >= padTop && targetY <= padTop + chartH) {
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = "rgba(255, 107, 107, 0.6)";
+    ctx.beginPath();
+    ctx.moveTo(padLeft, targetY);
+    ctx.lineTo(w - padRight, targetY);
+    ctx.stroke();
+    ctx.fillStyle = "#FF6B6B";
+    ctx.textAlign = "left";
+    ctx.fillText("目标 53.5kg", padLeft + 4, targetY - 4);
+    ctx.restore();
+  }
+
+  // 绘制单日点线
+  ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  points.forEach((p, idx) => {
+    const x = getX(idx);
+    const y = getY(p.weight);
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  points.forEach((p, idx) => {
+    const x = getX(idx);
+    const y = getY(p.weight);
+    ctx.fillStyle = "#F59E0B";
+    ctx.beginPath();
+    ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // 绘制 7 天均线 (平滑主线)
+  ctx.strokeStyle = "#10B981";
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  avgPoints.forEach((p, idx) => {
+    const x = getX(idx);
+    const y = getY(p.weight);
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // X 轴日期标注
+  ctx.fillStyle = "#A89E91";
+  ctx.textAlign = "center";
+  if (points.length > 0) {
+    ctx.fillText(points[0].date.slice(5), getX(0), h - 8);
+    if (points.length > 1) {
+      ctx.fillText(points[points.length - 1].date.slice(5), getX(points.length - 1), h - 8);
+    }
+  }
+
+  // 渲染历史记录列表
+  const histEl = document.getElementById("historyList");
+  histEl.innerHTML = "";
+  const revPoints = [...points].reverse();
+  revPoints.forEach(p => {
+    const row = document.createElement("div");
+    row.className = "history-row";
+    row.innerHTML = `
+      <span style="font-weight:600;">${p.date}</span>
+      <span style="color:var(--primary-dark); font-weight:750;">${p.weight.toFixed(1)} kg</span>
+      <button class="del-rec-btn" data-date="${p.date}">删除</button>
+    `;
+    row.querySelector(".del-rec-btn").onclick = () => {
+      delete app.logs[p.date];
+      saveLocalData();
+      renderAll();
+    };
+    histEl.appendChild(row);
+  });
+}
+
+/* ================== 云端同步 (Vercel API) ================== */
+let syncTimer = null;
+function setSyncStatus(text, ok, isSyncing = false) {
+  const dot = document.getElementById("syncDot");
+  const txt = document.getElementById("syncText");
+  txt.textContent = text;
+  dot.className = "sync-dot " + (isSyncing ? "syncing" : ok ? "online" : "");
+}
+
+async function syncWeightToCloud(w) {
+  setSyncStatus("同步中…", false, true);
+  try {
+    const res = await fetch(API_URL + "/api/weight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weight: w })
+    });
+    if (!res.ok) throw new Error();
+    setSyncStatus("云端已同步 ✓", true);
+  } catch (e) {
+    setSyncStatus("本地已保存", false);
+  }
+}
+
+async function pullCloudWeight() {
+  try {
+    const res = await fetch(API_URL + "/api/weight");
+    if (!res.ok) return;
+    const data = await res.json();
+    const w = Number(data && data.weight);
+    if (Number.isFinite(w) && w > 30 && Math.abs(w - app.weight) > 0.05) {
+      app.weight = w;
+      const todayLog = getDayLog(app.currentDate);
+      todayLog.weight = w;
+      saveLocalData();
+      renderAll();
+      setSyncStatus("已获取最新体重 ✓", true);
+    }
+  } catch (e) {}
+}
+
+/* ================== 页面事件监听与绑定 ================== */
+function initEvents() {
+  // Tab 切换
+  document.querySelectorAll(".nav-item").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+      btn.classList.add("active");
+      const target = btn.dataset.tab;
+      document.getElementById(target).classList.add("active");
+      if (target === "tab3") renderChartAndHistory();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+  });
+
+  // 日期切换
+  document.getElementById("selDate").onchange = (e) => {
+    app.currentDate = e.target.value || fmtDate(new Date());
+    renderAll();
+  };
+  document.getElementById("btnToday").onclick = () => {
+    app.currentDate = fmtDate(new Date());
+    renderAll();
+  };
+
+  // 体重步进与输入
+  function onWeightChange(newVal) {
+    const w = Math.max(30, Math.min(150, newVal));
+    app.weight = w;
+    const dayLog = getDayLog(app.currentDate);
+    dayLog.weight = w;
+    saveLocalData();
+    renderAll();
+
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => syncWeightToCloud(w), 800);
+  }
+
+  document.getElementById("btnWeightMinus").onclick = () => {
+    const dayLog = getDayLog(app.currentDate);
+    onWeightChange(Number(((dayLog.weight || app.weight) - 0.1).toFixed(1)));
+  };
+  document.getElementById("btnWeightPlus").onclick = () => {
+    const dayLog = getDayLog(app.currentDate);
+    onWeightChange(Number(((dayLog.weight || app.weight) + 0.1).toFixed(1)));
+  };
+  document.getElementById("inpWeight").onchange = (e) => {
+    const v = parseFloat(e.target.value);
+    if (!isNaN(v) && v > 0) onWeightChange(v);
+  };
+
+  // 喝水快捷
+  document.getElementById("btnAdd250").onclick = () => {
+    const dayLog = getDayLog(app.currentDate);
+    updateWater((dayLog.water || 0) + 250);
+  };
+  document.getElementById("btnResetWater").onclick = () => updateWater(0);
+
+  // 三餐 Tab
+  document.querySelectorAll(".meal-tab-btn").forEach(btn => {
+    btn.onclick = () => {
+      app.activeMealDay = btn.dataset.mealday;
+      renderMeals(Math.max(0, diffDays(app.currentDate, app.config.startDate)), getDayLog(app.currentDate));
+    };
+  });
+
+  // 快捷跳转计时器
+  document.getElementById("btnGoRestTimer").onclick = () => {
+    document.querySelector('.nav-item[data-tab="tab2"]').click();
+  };
+  document.getElementById("btnGoHiitTimer").onclick = () => {
+    document.querySelector('.nav-item[data-tab="tab2"]').click();
+  };
+
+  // 周期校准弹窗
+  const modal = document.getElementById("periodModal");
+  function showModal() {
+    document.getElementById("modalDateStr").textContent = app.currentDate;
+    modal.classList.add("open");
+  }
+  function hideModal() { modal.classList.remove("open"); }
+
+  document.getElementById("btnPeriodCalib").onclick = showModal;
+  document.getElementById("btnCycleInfo").onclick = showModal;
+  document.getElementById("btnModalCancel").onclick = hideModal;
+  document.getElementById("btnModalConfirm").onclick = () => {
+    app.config.periodBaseline = app.currentDate;
+    saveLocalData();
+    hideModal();
+    playCheerTone();
+    renderAll();
+    alert("🌸 经期 D1 已重新对齐到 " + app.currentDate + "，后续周期阶段已全部更新！");
+  };
+
+  // 设置项保存
+  ["cfgHeight", "cfgAge", "cfgCycleLen", "cfgStartDate"].forEach(id => {
+    document.getElementById(id).onchange = () => {
+      app.config.height = Number(document.getElementById("cfgHeight").value) || 164;
+      app.config.age = Number(document.getElementById("cfgAge").value) || 29;
+      app.config.cycleLen = Number(document.getElementById("cfgCycleLen").value) || 28;
+      app.config.startDate = document.getElementById("cfgStartDate").value || "2026-09-02";
+      saveLocalData();
+      renderAll();
+    };
+  });
+
+  window.onresize = renderChartAndHistory;
+}
+
+/* ================== 初始化启动 ================== */
+loadLocalData();
+initEvents();
+initRestTimer();
+initHiitTimer();
+renderAll();
+pullCloudWeight();
+</script>
+</body>
+</html>

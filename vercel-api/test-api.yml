@@ -1,0 +1,14 @@
+name: test-api
+on: [workflow_dispatch]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET weight
+        run: curl -sS --connect-timeout 25 https://fatloss-api-livid.vercel.app/api/weight
+      - name: POST weight 59.5
+        run: curl -sS -X POST -H 'Content-Type: application/json' -d '{"weight":59.5}' https://fatloss-api-livid.vercel.app/api/weight
+      - name: GET weight again
+        run: curl -sS https://fatloss-api-livid.vercel.app/api/weight
+      - name: Check repo file
+        run: curl -sS https://api.github.com/repos/cfy424/fatloss90/contents/weight.json | head -c 400
