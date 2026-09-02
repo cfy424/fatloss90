@@ -80,24 +80,26 @@ body {
 }
 .sync-tag {
   font-size: 11px;
-  padding: 4px 8px;
+  padding: 4px 9px;
   border-radius: 99px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  color: var(--text-muted);
+  color: var(--text-sub);
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  font-weight: 600;
 }
 .sync-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #CBD5E1;
 }
 .sync-dot.online { background: var(--accent-green); box-shadow: 0 0 6px rgba(16,185,129,0.6); }
-.sync-dot.syncing { background: var(--accent-amber); }
+.sync-dot.syncing { background: var(--accent-amber); animation: blink 0.8s infinite alternate; }
+@keyframes blink { from { opacity: 0.4; } to { opacity: 1; } }
 
 /* 日期与周期控制条 */
 .top-controller-card {
@@ -186,21 +188,23 @@ body {
   gap: 6px;
 }
 .step-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 1px solid #E2D6C8;
   background: #FFF;
   color: var(--text-main);
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  user-select: none;
 }
+.step-btn:active { background: #F5EAE0; }
 .weight-input {
-  width: 68px;
+  width: 72px;
   text-align: center;
   font-size: 18px;
   font-weight: 800;
@@ -209,6 +213,7 @@ body {
   border-radius: 8px;
   padding: 4px 0;
   background: #FFF;
+  outline: none;
 }
 .weight-unit {
   font-size: 13px;
@@ -697,7 +702,7 @@ canvas#weightChart {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(220, 205, 190, 0.5);
@@ -1825,9 +1830,11 @@ function renderChartAndHistory() {
 
 /* ================== 云端同步 (Vercel API) ================== */
 let syncTimer = null;
+let syncResetTimer = null;
 function setSyncStatus(text, ok, isSyncing = false) {
   const dot = document.getElementById("syncDot");
   const txt = document.getElementById("syncText");
+  if (!dot || !txt) return;
   txt.textContent = text;
   dot.className = "sync-dot " + (isSyncing ? "syncing" : ok ? "online" : "");
 }
@@ -1835,21 +1842,30 @@ function setSyncStatus(text, ok, isSyncing = false) {
 async function syncWeightToCloud(w) {
   setSyncStatus("同步中…", false, true);
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
     const res = await fetch(API_URL + "/api/weight", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ weight: w })
+      body: JSON.stringify({ weight: w }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (!res.ok) throw new Error();
     setSyncStatus("云端已同步 ✓", true);
+    clearTimeout(syncResetTimer);
+    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 3000);
   } catch (e) {
-    setSyncStatus("本地已保存", false);
+    setSyncStatus("已存本地 ✓", true);
   }
 }
 
 async function pullCloudWeight() {
   try {
-    const res = await fetch(API_URL + "/api/weight");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(API_URL + "/api/weight", { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!res.ok) return;
     const data = await res.json();
     const w = Number(data && data.weight);
@@ -1859,7 +1875,7 @@ async function pullCloudWeight() {
       todayLog.weight = w;
       saveLocalData();
       renderAll();
-      setSyncStatus("已获取最新体重 ✓", true);
+      setSyncStatus("已就绪", true);
     }
   } catch (e) {}
 }
@@ -1890,7 +1906,7 @@ function initEvents() {
   };
 
   // 体重步进与输入
-  function onWeightChange(newVal) {
+  function onWeightChange(newVal, sync = true) {
     const w = Math.max(30, Math.min(150, newVal));
     app.weight = w;
     const dayLog = getDayLog(app.currentDate);
@@ -1898,8 +1914,11 @@ function initEvents() {
     saveLocalData();
     renderAll();
 
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(() => syncWeightToCloud(w), 800);
+    if (sync) {
+      setSyncStatus("准备同步…", true);
+      clearTimeout(syncTimer);
+      syncTimer = setTimeout(() => syncWeightToCloud(w), 600);
+    }
   }
 
   document.getElementById("btnWeightMinus").onclick = () => {
@@ -1910,10 +1929,16 @@ function initEvents() {
     const dayLog = getDayLog(app.currentDate);
     onWeightChange(Number(((dayLog.weight || app.weight) + 0.1).toFixed(1)));
   };
-  document.getElementById("inpWeight").onchange = (e) => {
+  
+  const inpW = document.getElementById("inpWeight");
+  inpW.addEventListener("input", (e) => {
     const v = parseFloat(e.target.value);
-    if (!isNaN(v) && v > 0) onWeightChange(v);
-  };
+    if (!isNaN(v) && v >= 30 && v <= 150) onWeightChange(v);
+  });
+  inpW.addEventListener("change", (e) => {
+    const v = parseFloat(e.target.value);
+    if (!isNaN(v) && v >= 30 && v <= 150) onWeightChange(v);
+  });
 
   // 喝水快捷
   document.getElementById("btnAdd250").onclick = () => {
