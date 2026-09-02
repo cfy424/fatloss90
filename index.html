@@ -188,30 +188,31 @@ body {
   gap: 6px;
 }
 .step-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: 1px solid #E2D6C8;
   background: #FFF;
   color: var(--text-main);
   font-weight: bold;
-  font-size: 16px;
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   user-select: none;
+  touch-action: manipulation;
 }
 .step-btn:active { background: #F5EAE0; }
 .weight-input {
-  width: 72px;
+  width: 76px;
   text-align: center;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--primary-dark);
   border: 1px solid #E8D8CA;
   border-radius: 8px;
-  padding: 4px 0;
+  padding: 5px 0;
   background: #FFF;
   outline: none;
 }
@@ -311,6 +312,7 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   color: #94A3B8;
+  user-select: none;
 }
 .water-cup-btn.filled {
   background: #0284C7;
@@ -338,6 +340,7 @@ body {
   background: #FFF;
   color: #0284C7;
   cursor: pointer;
+  user-select: none;
 }
 
 /* 训练动作打卡清单 */
@@ -411,6 +414,7 @@ body {
   gap: 6px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
+  user-select: none;
 }
 .btn-primary-action {
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
@@ -437,6 +441,7 @@ body {
   font-weight: 600;
   color: var(--text-sub);
   cursor: pointer;
+  user-select: none;
 }
 .meal-tab-btn.active {
   background: var(--primary-light);
@@ -517,6 +522,7 @@ body {
   font-weight: 600;
   color: var(--text-sub);
   cursor: pointer;
+  user-select: none;
 }
 .preset-chip.active {
   background: var(--primary);
@@ -539,6 +545,7 @@ body {
   justify-content: center;
   cursor: pointer;
   box-shadow: var(--shadow-md);
+  user-select: none;
 }
 .btn-round-ctrl.play {
   background: var(--accent-green);
@@ -671,6 +678,7 @@ canvas#weightChart {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  user-select: none;
 }
 .settings-group {
   display: flex;
@@ -725,6 +733,7 @@ canvas#weightChart {
   padding: 4px 12px;
   border-radius: 12px;
   transition: all 0.2s;
+  user-select: none;
 }
 .nav-item.active {
   color: var(--primary-dark);
@@ -804,7 +813,7 @@ canvas#weightChart {
       </div>
       <div class="weight-input-group">
         <button class="step-btn" id="btnWeightMinus">-</button>
-        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="58.0">
+        <input type="number" id="inpWeight" class="weight-input" step="0.1" min="30" max="150" value="58.5">
         <span class="weight-unit">kg</span>
         <button class="step-btn" id="btnWeightPlus">+</button>
       </div>
@@ -818,17 +827,17 @@ canvas#weightChart {
       </div>
       <div class="macro-cell c-pro">
         <div class="macro-name">蛋白质</div>
-        <div class="macro-val" id="valProtein">104g</div>
+        <div class="macro-val" id="valProtein">105g</div>
         <div class="macro-desc">1.8g/kg</div>
       </div>
       <div class="macro-cell c-carb">
         <div class="macro-name">碳水</div>
-        <div class="macro-val" id="valCarb">145g</div>
+        <div class="macro-val" id="valCarb">146g</div>
         <div class="macro-desc" id="descCarb">2.5g/kg</div>
       </div>
       <div class="macro-cell c-fat">
         <div class="macro-name">脂肪</div>
-        <div class="macro-val" id="valFat">52g</div>
+        <div class="macro-val" id="valFat">53g</div>
         <div class="macro-desc">0.9g/kg</div>
       </div>
     </div>
@@ -946,7 +955,7 @@ canvas#weightChart {
         </div>
         <div class="stat-box">
           <div class="stat-label">最新 7天均线</div>
-          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">58.0 kg</div>
+          <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">58.5 kg</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">阶段目标</div>
@@ -1124,7 +1133,7 @@ const WEEK_PLAN = [
 /* ================== 状态管理 ================== */
 let app = {
   currentDate: fmtDate(new Date()),
-  weight: 58.0,
+  weight: 58.5,
   config: {
     height: 164,
     age: 29,
@@ -1268,8 +1277,12 @@ function renderAll() {
     cycleBtn.classList.remove("period");
   }
 
-  // 3. 体重与营养素
-  document.getElementById("inpWeight").value = curWeight.toFixed(1);
+  // 3. 体重与营养素 (如果输入框正处于输入聚焦状态，不强行覆盖光标)
+  const inpWEl = document.getElementById("inpWeight");
+  if (document.activeElement !== inpWEl) {
+    inpWEl.value = curWeight.toFixed(1);
+  }
+
   const macros = calcMacros(curWeight, dayIdx, cycle);
   document.getElementById("valKcal").textContent = macros.kcal;
   document.getElementById("descKcal").textContent = macros.kcalDesc;
@@ -1854,11 +1867,11 @@ async function syncWeightToCloud(w) {
     if (!res.ok) throw new Error();
     setSyncStatus("云端已同步 ✓", true);
     clearTimeout(syncResetTimer);
-    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2500);
+    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2000);
   } catch (e) {
     setSyncStatus("已存本地 ✓", true);
     clearTimeout(syncResetTimer);
-    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2500);
+    syncResetTimer = setTimeout(() => setSyncStatus("已就绪", true), 2000);
   }
 }
 
@@ -1881,7 +1894,7 @@ async function pullCloudWeight() {
       saveLocalData();
       renderAll();
       setSyncStatus("云端已同步 ✓", true);
-      setTimeout(() => setSyncStatus("已就绪", true), 2000);
+      setTimeout(() => setSyncStatus("已就绪", true), 1500);
     }
   } catch (e) {}
 }
@@ -1944,6 +1957,10 @@ function initEvents() {
   inpW.addEventListener("change", (e) => {
     const v = parseFloat(e.target.value);
     if (!isNaN(v) && v >= 30 && v <= 150) onWeightChange(v);
+  });
+  inpW.addEventListener("blur", () => {
+    const dayLog = getDayLog(app.currentDate);
+    inpW.value = (dayLog.weight || app.weight).toFixed(1);
   });
 
   // 喝水快捷
