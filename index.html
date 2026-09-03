@@ -1422,8 +1422,11 @@ canvas#weightChart {
       <!-- 训练动作渲染列表（极简紧凑清单） -->
       <div id="exerciseList"></div>
 
+      <!-- 专属快捷动作按钮（单车日/HIIT日等） -->
+      <div class="training-action-row" id="trainingActionRow"></div>
+
       <!-- 一键进入 Tab 2 动图跟练与计时大屏 -->
-      <div style="margin-top:12px;">
+      <div style="margin-top:12px;" id="boxGoWorkoutStudio">
         <button class="action-btn btn-primary-action" id="btnGoWorkoutStudio" style="box-shadow: 0 4px 14px rgba(255, 107, 107, 0.3);">
           🔥 开启逐个动图跟练与计时 ➔
         </button>
@@ -2231,9 +2234,7 @@ function renderTraining(dateStr, cycle, dayLog) {
   listEl.innerHTML = "";
   variantBar.innerHTML = "";
 
-  // 视图模式按钮状态
-  document.getElementById("btnViewCompact").classList.toggle("active", app.workoutViewMode === "compact");
-  document.getElementById("btnViewFocus").classList.toggle("active", app.workoutViewMode === "focus");
+
 
   // 经期模式
   if (cycle.phase === "经期") {
