@@ -400,12 +400,65 @@ body {
   user-select: none;
 }
 
+/* 训练视图切换胶囊 */
+.workout-view-toggle {
+  display: flex;
+  background: #F4ECE3;
+  padding: 2px;
+  border-radius: 99px;
+  gap: 2px;
+}
+.view-btn {
+  border: none;
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-sub);
+  padding: 3px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+.view-btn.active {
+  background: #FFF;
+  color: var(--primary-dark);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* 训练方案变体切换条（如 A1 复合塑形 / A2 蜜桃臀专项） */
+.plan-variant-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.variant-chip {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 99px;
+  border: 1px solid var(--card-border);
+  background: #FFFDF9;
+  color: var(--text-sub);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: all 0.15s;
+}
+.variant-chip.active {
+  background: var(--primary-light);
+  border-color: #FFCDCD;
+  color: var(--primary-dark);
+}
+
 /* 训练动作打卡清单 */
 .exercise-item {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #F5EFEB;
 }
 .exercise-item:last-child { border-bottom: none; }
@@ -435,11 +488,82 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 6px;
 }
-.ex-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
-.ex-set-meta { font-size: 13px; font-weight: 700; color: var(--primary); }
+.ex-name-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ex-name { font-size: 15px; font-weight: 750; color: var(--text-main); }
+.ex-target-pill {
+  font-size: 10.5px;
+  color: #0284C7;
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.ex-set-meta { font-size: 13px; font-weight: 750; color: var(--primary); white-space: nowrap; }
 .ex-weight-rec { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
-.ex-tips { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+/* 动作操作按钮组（看动图、换动作） */
+.ex-action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.btn-ex-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 750;
+  background: #FFF5F5;
+  color: #E04D4D;
+  border: 1px solid #FFD6D6;
+  padding: 3px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+.btn-ex-demo:active { transform: scale(0.95); background: #FFE6E6; }
+.btn-ex-swap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #FFFDF9;
+  color: var(--text-sub);
+  border: 1px solid var(--card-border);
+  padding: 3px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+}
+.btn-ex-swap:active { background: #F5EEE6; }
+
+/* 动图直接展开卡片模式 */
+.ex-inline-gif-box {
+  margin-top: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #EFE4D8;
+  background: #000;
+  max-width: 280px;
+}
+.ex-inline-gif-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ex-tips { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
 .ex-note-input {
   width: 100%;
   border: 1px dashed #E2D5C8;
@@ -447,7 +571,7 @@ body {
   border-radius: 6px;
   font-size: 11px;
   padding: 4px 8px;
-  margin-top: 5px;
+  margin-top: 6px;
   color: var(--text-main);
   outline: none;
 }
@@ -824,25 +948,29 @@ canvas#weightChart {
 }
 .nav-icon { font-size: 18px; line-height: 1; }
 
-/* 模态弹窗 */
+/* 模态弹窗通用遮罩 */
 .modal-mask {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 20px;
+  padding: 16px;
 }
 .modal-mask.open { display: flex; }
 .modal-box {
   background: #FFF;
   border-radius: var(--radius-lg);
   padding: 22px;
-  max-width: 400px;
+  max-width: 420px;
   width: 100%;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .modal-box h3 { margin: 0 0 10px; font-size: 17px; }
 .modal-box p { font-size: 13.5px; color: var(--text-sub); margin: 0 0 16px; }
@@ -857,6 +985,104 @@ canvas#weightChart {
 }
 .modal-btn.cancel { background: #F1E7DD; color: var(--text-sub); }
 .modal-btn.confirm { background: #F43F5E; color: #FFF; }
+
+/* 动作演示专属弹窗样式 */
+.demo-modal-box {
+  padding: 18px;
+  max-width: 440px;
+}
+.demo-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.demo-header-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.demo-close-btn {
+  background: #F3ECE2;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.demo-gif-wrapper {
+  width: 100%;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}
+.demo-gif-img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  display: block;
+}
+.demo-pill-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.demo-info-card {
+  background: #FFFDF9;
+  border: 1px solid #F1E7DD;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.demo-info-label {
+  font-size: 12px;
+  font-weight: 750;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.demo-info-text {
+  font-size: 12.5px;
+  color: #3B322A;
+  line-height: 1.55;
+}
+.demo-bottom-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.btn-swap-in-modal {
+  flex: 1;
+  padding: 10px;
+  background: #FFF8F0;
+  border: 1px solid #FED7AA;
+  color: #EA580C;
+  font-weight: 750;
+  font-size: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
 </style>
 </head>
 <body>
@@ -952,9 +1178,22 @@ canvas#weightChart {
           <div class="card-title">🏋️ 今日训练清单</div>
           <div class="card-subtitle-tag" id="lblWorkoutTitle">下肢力量 A</div>
         </div>
-        <span class="card-status-badge" id="lblWorkoutDoneBadge">0/6 完成</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <!-- 动图直显切换 -->
+          <div class="workout-view-toggle">
+            <button class="view-btn active" id="btnViewCompact" title="紧凑清单">📋 清单</button>
+            <button class="view-btn" id="btnViewCards" title="展示动图">🎬 动图</button>
+          </div>
+          <span class="card-status-badge" id="lblWorkoutDoneBadge">0/6 完成</span>
+        </div>
       </div>
+
+      <!-- 训练变体/进阶方案选择条（力量日多方案可选） -->
+      <div class="plan-variant-bar" id="planVariantBar"></div>
+
+      <!-- 训练动作渲染列表 -->
       <div id="exerciseList"></div>
+
       <!-- 专属快捷动作按钮（力量只显组间，间歇只显单车，稳态有氧和休息日不显） -->
       <div class="training-action-row" id="trainingActionRow"></div>
     </section>
@@ -1163,6 +1402,53 @@ canvas#weightChart {
   </div>
 </div>
 
+<!-- 动作标准动图与要领专属弹窗 -->
+<div class="modal-mask" id="demoModal">
+  <div class="modal-box demo-modal-box">
+    <div class="demo-header-row">
+      <div class="demo-header-title">
+        <span id="demoEmoji">🏋️</span>
+        <span id="demoTitle">动作演示</span>
+      </div>
+      <button class="demo-close-btn" id="btnDemoClose">✕</button>
+    </div>
+
+    <!-- 高清动作动态图 -->
+    <div class="demo-gif-wrapper">
+      <img id="demoGif" class="demo-gif-img" src="" alt="动作标准动图演示">
+    </div>
+
+    <!-- 靶向与部位标签 -->
+    <div class="demo-pill-row">
+      <span class="ex-target-pill" id="demoTargetPill">🎯 目标肌群</span>
+      <span class="card-status-badge" id="demoSetsPill">建议组数</span>
+    </div>
+
+    <!-- 呼吸与节奏 -->
+    <div class="demo-info-card">
+      <div class="demo-info-label">🌬️ 呼吸节奏与节拍</div>
+      <div class="demo-info-text" id="demoBreathing">下蹲吸气（2秒）➔ 起立呼气（1秒）➔ 顶峰挤压（1秒）</div>
+    </div>
+
+    <!-- 发力要领 -->
+    <div class="demo-info-card">
+      <div class="demo-info-label">✅ 发力黄金法则</div>
+      <div class="demo-info-text" id="demoTips">保持核心收紧，膝盖顺应脚尖方向。</div>
+    </div>
+
+    <!-- 常见错误避坑 -->
+    <div class="demo-info-card" style="background:#FFF9F9; border-color:#FED7D7;">
+      <div class="demo-info-label" style="color:#E11D48;">⚠️ 常见错误避坑</div>
+      <div class="demo-info-text" id="demoMistakes">避免弓腰、膝盖内扣或过度借力。</div>
+    </div>
+
+    <div class="demo-bottom-actions">
+      <button class="btn-swap-in-modal" id="btnModalSwapEx">🔄 换成同部位替代动作</button>
+      <button class="modal-btn confirm" id="btnDemoConfirmDone" style="flex:1;">✓ 完成打卡</button>
+    </div>
+  </div>
+</div>
+
 <script>
 "use strict";
 
@@ -1171,30 +1457,260 @@ const STORE_KEY = "fatloss_app_v3_state";
 const API_URL = "https://fatloss-api-livid.vercel.app";
 const DAY_MS = 86400000;
 const CARB_LADDER = [2.5, 2.4, 2.2, 2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.5];
+const GIF_CDN_BASE = "https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/videos/";
 
-const EXERCISES_DB = {
-  "下肢力量 A": [
-    { name: "高脚杯深蹲", emoji: "🏋️", detail: "3 × 12-15", weight: "哑铃 6-8kg", tips: "脚跟踩稳，膝盖对准脚尖，核心收紧" },
-    { name: "罗马尼亚硬拉", emoji: "🏋️", detail: "3 × 12", weight: "各 4-6kg", tips: "髋部后移、背部平直，腘绳肌拉伸" },
-    { name: "负重臀桥", emoji: "🍑", detail: "3 × 12-15", weight: "6-10kg 放髋上", tips: "顶峰停顿 1-2 秒，臀部发力不顶腰" },
-    { name: "箭步蹲", emoji: "🦵", detail: "2 × 10/侧", weight: "各 3-5kg", tips: "前膝不过脚尖，重心垂直下放" },
-    { name: "弹力带侧向走", emoji: "🩹", detail: "3 × 15", weight: "轻-中阻力", tips: "半蹲横向移动，感受臀中肌发力" },
-    { name: "平板支撑", emoji: "🧱", detail: "3 × 30s", weight: "自重", tips: "身体一条直线，严禁塌腰" }
-  ],
-  "上肢力量 B": [
-    { name: "哑铃卧推", emoji: "🏋️", detail: "3 × 10-12", weight: "各 3-5kg", tips: "肩胛下沉，慢下放约 2 秒" },
-    { name: "单臂哑铃划船", emoji: "💪", detail: "3 × 12/侧", weight: "6-8kg", tips: "背平直，肘贴近身体向后拉" },
-    { name: "哑铃肩推", emoji: "🏋️", detail: "3 × 10-12", weight: "各 2-4kg", tips: "核心收紧，不借力不塌腰" },
-    { name: "弹力带面拉", emoji: "🩹", detail: "3 × 15-20", weight: "轻-中阻力", tips: "拉向面部，肩胛向后收紧" },
-    { name: "二头弯举", emoji: "💪", detail: "2 × 12-15", weight: "各 2-3kg", tips: "肘部固定贴肋，身体不晃动" },
-    { name: "跪姿俯卧撑", emoji: "🧱", detail: "2 × 8-12", weight: "自重", tips: "身体一条直线，胸口贴近地面" }
-  ],
-  "动感单车 · 稳定": [
-    { name: "动感单车稳态燃脂", emoji: "🚴", detail: "30-40 分钟", weight: "中低阻力", tips: "强度保持在“能说话但微喘”最佳燃脂区间" }
-  ],
-  "动感单车 · 间歇": [
-    { name: "动感单车 HIIT 间歇", emoji: "🚴", detail: "约 30 分钟", weight: "热身5m + 6-8轮(冲刺1m/恢复2m) + 放松5m", tips: "冲刺用八成力全力蹬，恢复期轻松慢踩" }
-  ]
+/* ================== 超丰富动作库（含高清 3D 动作动图、呼吸节拍、要领与避坑） ================== */
+const EXERCISE_LIBRARY = {
+  // --- 下肢动作库 ---
+  "高脚杯深蹲": {
+    emoji: "🏋️",
+    target: "股四头肌 · 臀大肌",
+    detail: "3 × 12-15",
+    weight: "哑铃 6-8kg",
+    gif: "1760-yn8yg1r.gif",
+    tips: "双脚与肩同宽微外八，双手托持哑铃于胸前；屈髋屈膝平稳下蹲至大腿与地面平行，膝盖严格对准第二脚趾，脚跟踩实发力站起。",
+    breathing: "下蹲吸气（2秒）➔ 起立呼气（1秒）➔ 顶部臀部收紧停顿1秒",
+    mistakes: "严禁内扣膝盖或脚尖离地，下蹲时切勿含胸弓背。",
+    alternatives: ["哑铃双腿深蹲", "保加利亚分腿蹲", "哑铃箭步蹲"]
+  },
+  "哑铃双腿深蹲": {
+    emoji: "🏋️",
+    target: "股四头肌 · 臀部",
+    detail: "3 × 12-15",
+    weight: "双手各 4-6kg",
+    gif: "0413-HsvHqgf.gif",
+    tips: "双手自然持哑铃垂于身体两侧，核心锁紧，臀部向后下方坐如同坐低凳，推地站起时夹紧臀部。",
+    breathing: "下沉吸气蓄力 ➔ 推起呼气发力",
+    mistakes: "重心不可前倾至脚尖，避免膝关节代偿受压过多。",
+    alternatives: ["高脚杯深蹲", "保加利亚分腿蹲"]
+  },
+  "罗马尼亚硬拉": {
+    emoji: "🏋️",
+    target: "大腿后侧腘绳肌 · 臀大肌",
+    detail: "3 × 12",
+    weight: "双手各 4-6kg",
+    gif: "1459-rR0LJzx.gif",
+    tips: "双脚与髋同宽，微屈膝固定角度不变；屈髋将臀部尽量往后墙推，哑铃紧贴小腿前侧下放至膝盖下方，感受大腿后侧强烈紧绷拉伸后收髋拉起。",
+    breathing: "俯身屈髋吸气 ➔ 收臀伸髋呼气站直",
+    mistakes: "不是深蹲！膝盖不要大幅下弯；全程挺胸沉肩，严禁腰椎弯曲拱背。",
+    alternatives: ["负重臀桥", "单腿臀桥"]
+  },
+  "负重臀桥": {
+    emoji: "🍑",
+    target: "臀大肌 · 核心后链",
+    detail: "3 × 12-15",
+    weight: "哑铃 6-10kg 放置髋部",
+    gif: "3013-u0cNiij.gif",
+    tips: "仰卧屈膝，哑铃平置于小腹下缘髋骨处（可垫毛巾），脚跟踩实地面；臀部发力顶起至大腿与胸膛呈一直线，顶峰挤压夹紧臀部2秒。",
+    breathing: "顶峰呼气夹紧 ➔ 缓慢下放吸气（不要完全落死地面）",
+    mistakes: "切勿用腰部过度反弓借力！发力完全集中在臀大肌上。",
+    alternatives: ["罗马尼亚硬拉", "单腿自重臀桥"]
+  },
+  "哑铃箭步蹲": {
+    emoji: "🦵",
+    target: "股四头肌 · 臀中肌平衡",
+    detail: "2 × 10/侧",
+    weight: "双手各 3-5kg",
+    gif: "0336-RRWFUcw.gif",
+    tips: "双手持哑铃，迈出一大步，躯干垂直匀速下沉至前后膝均呈90度，后膝微触地面上方，前脚跟发力蹬地推回。",
+    breathing: "迈出下沉吸气 ➔ 发力蹬回呼气",
+    mistakes: "前膝不要向内扣或过度向前冲过脚尖，躯干避免摇晃。",
+    alternatives: ["保加利亚分腿蹲", "高脚杯深蹲"]
+  },
+  "保加利亚分腿蹲": {
+    emoji: "🦵",
+    target: "臀腿单侧极限雕刻",
+    detail: "2 × 8-10/侧",
+    weight: "自重或各 2-4kg",
+    gif: "0410-qx4fgX7.gif",
+    tips: "单脚向后搭在凳子/沙发上，前脚前移踏稳；躯干微微前倾30度，屈膝下蹲将全部重量集中在前腿臀大肌，推起时脚跟踩死。",
+    breathing: "下沉吸气（2秒）➔ 发力蹬起呼气",
+    mistakes: "后腿只是负责平衡，严禁后腿主动蹬地发力抢夺负荷。",
+    alternatives: ["哑铃箭步蹲", "高脚杯深蹲"]
+  },
+  "平板支撑": {
+    emoji: "🧱",
+    target: "腹横肌 · 全身深层稳定",
+    detail: "3 × 30-45s",
+    weight: "自重",
+    gif: "3544-5VXmnV5.gif",
+    tips: "双肘位于肩部正下方，腹部像准备挨拳一样强力收紧，骨盆微微后倾，头、肩、臀、足跟维持完美直线。",
+    breathing: "保持平稳均匀的深腹式呼吸，切忌憋气",
+    mistakes: "骨盆塌陷下坠（塌腰会伤害腰椎）或撅臀过高偷懒。",
+    alternatives: ["死虫式", "跪姿侧支撑"]
+  },
+  "死虫式": {
+    emoji: "🪲",
+    target: "深层核心 · 改善骨盆前倾",
+    detail: "3 × 12/侧",
+    weight: "自重",
+    gif: "0276-iny3m5y.gif",
+    tips: "仰卧屈髋屈膝90度，双臂伸直指向天花板。下背部死死贴在地面不留一丝缝隙；对侧手脚缓慢延伸下沉至接近地面，再平稳收回。",
+    breathing: "对侧伸展时呼气收紧核心 ➔ 收回时吸气",
+    mistakes: "当下背部离开地面浮起时即表明核心失去控制，应减小伸展幅度。",
+    alternatives: ["平板支撑", "负重臀桥"]
+  },
+
+  // --- 上肢与胸背肩动作库 ---
+  "哑铃卧推": {
+    emoji: "🏋️",
+    target: "胸大肌 · 紧致副乳与胸部",
+    detail: "3 × 10-12",
+    weight: "双手各 3-5kg",
+    gif: "0289-SpYC0Kp.gif",
+    tips: "仰卧在卧推凳或瑜伽垫上，肩胛骨后缩下沉；大臂与身体呈45-60度夹角，推起哑铃至手臂伸直微屈不锁死，控制下落2秒感受胸部拉伸。",
+    breathing: "向上推起呼气 ➔ 慢速下落吸气",
+    mistakes: "手臂切勿与肩膀呈90度平行打开（会造成肩袖严重挤压撞击）。",
+    alternatives: ["跪姿俯卧撑", "地板哑铃卧推"]
+  },
+  "跪姿俯卧撑": {
+    emoji: "🧱",
+    target: "胸大肌 · 核心上肢联动",
+    detail: "2 × 8-12",
+    weight: "自重",
+    gif: "3211-ZOuKWir.gif",
+    tips: "膝盖跪地双脚交叉抬起，双手略宽于肩支撑，腹部收紧躯干成平板直线；屈肘下落至胸部接近地面，双手推地撑起。",
+    breathing: "俯身下落吸气 ➔ 推起呼气",
+    mistakes: "头部不要前探，腰腹切勿松垮塌陷。",
+    alternatives: ["哑铃卧推", "上斜俯卧撑"]
+  },
+  "单臂哑铃划船": {
+    emoji: "💪",
+    target: "背阔肌 · 改善圆肩与体态",
+    detail: "3 × 12/侧",
+    weight: "单手 6-8kg",
+    gif: "0292-C0MA9bC.gif",
+    tips: "一手一膝支撑于长凳上或俯身站立，背部保持平直；肩胛带动肘关节紧贴肋骨向后上方拉起哑铃，顶峰挤压背部肌肉1秒。",
+    breathing: "向后拉起呼气停顿 ➔ 顺畅下放吸气",
+    mistakes: "不要用手臂猛甩或旋转身体躯干借力，背部始终水平平直。",
+    alternatives: ["俯身双臂哑铃划船", "弹力带面拉"]
+  },
+  "坐姿哑铃推举": {
+    emoji: "🏋️",
+    target: "三角肌前中束 · 打造直角肩",
+    detail: "3 × 10-12",
+    weight: "双手各 2-4kg",
+    gif: "0405-znQUdHY.gif",
+    tips: "坐姿挺胸收腹，双手持哑铃于耳旁大臂水平；沿微弧线向上推起至头顶上方，手肘微屈不锁死关节，慢落2秒吸气。",
+    breathing: "向上推起呼气 ➔ 匀速下放吸气",
+    mistakes: "后背切勿过度反弓拱起借力，避免耸肩借用斜方肌。",
+    alternatives: ["哑铃侧平举", "站姿哑铃推举"]
+  },
+  "哑铃侧平举": {
+    emoji: "🕊️",
+    target: "三角肌中束 · 视觉显脸小直角肩",
+    detail: "3 × 12-15",
+    weight: "双手各 1.5-3kg（轻重量高次数）",
+    gif: "0334-DsgkuIt.gif",
+    tips: "站立身体微前倾，手肘微屈锁定角度；向两侧平滑抬起哑铃至大臂接近地面平行，小指略高于拇指如倾倒水瓶，慢速控制下放。",
+    breathing: "侧平抬起呼气 ➔ 缓慢下放吸气",
+    mistakes: "绝对不可剧烈晃动腰部借力或耸肩，斜方肌代偿会导致脖子粗短。",
+    alternatives: ["坐姿哑铃侧平举", "坐姿哑铃推举"]
+  },
+  "哑铃二头弯举": {
+    emoji: "💪",
+    target: "肱二头肌 · 手臂紧致线条",
+    detail: "2 × 12-15",
+    weight: "双手各 2-3kg",
+    gif: "0294-NbVPDMW.gif",
+    tips: "双手持哑铃垂于身侧，肘关节如轴承般紧贴肋骨锁定不动；前臂收缩向上弯举至胸前最高点，挤压二头肌停顿1秒。",
+    breathing: "弯举收缩呼气 ➔ 缓慢下放吸气",
+    mistakes: "大臂与手肘不要前后乱晃摇摆借力。",
+    alternatives: ["哑铃锤式弯举", "哑铃卧推"]
+  },
+  "哑铃俯身后臂屈伸": {
+    emoji: "💪",
+    target: "肱三头肌 · 消除拜拜肉手臂松弛",
+    detail: "2 × 12-15",
+    weight: "双手各 2-3kg",
+    gif: "0333-W6PxUkg.gif",
+    tips: "微屈膝俯身背平直，大臂抬起至平行于躯干并死死固定；仅前臂向后上方充分伸直挤压大臂后侧拜拜肉，顶峰停顿1秒。",
+    breathing: "手臂后伸呼气夹紧 ➔ 屈臂还原吸气",
+    mistakes: "大臂不能往下掉失去紧张感，幅度要充分伸直后展。",
+    alternatives: ["跪姿俯卧撑", "凳上反向臂屈伸"]
+  },
+
+  // --- 休息日与深度柔韧拉伸动作库 ---
+  "股四头肌侧卧拉伸": {
+    emoji: "🧘",
+    target: "大腿前侧肌群深度舒展",
+    detail: "左右各 30-45 秒",
+    weight: "自重徒手",
+    gif: "0613-BWnJR72.gif",
+    tips: "侧卧或站立，一手握住同侧脚踝拉向臀部，膝盖并拢并向后微引，感受大腿前侧平缓而舒适的拉长感。",
+    breathing: "深长且平稳的腹式呼吸，让肌肉在呼气中逐步放松",
+    mistakes: "不要过度挺肚拱腰，腹部轻收保护腰椎。",
+    alternatives: ["站姿股四头肌拉伸"]
+  },
+  "腘绳肌柔韧拉伸": {
+    emoji: "🧘",
+    target: "大腿后侧腘绳肌舒展",
+    detail: "左右各 30-45 秒",
+    weight: "自重徒手",
+    gif: "1511-99rWm7w.gif",
+    tips: "单腿伸直勾起脚尖，背部平直从髋关节处向前俯身，双手自然向脚尖延展，感受大腿后侧与腘窝柔韧拉长。",
+    breathing: "每次呼气时微微加深一丝拉伸幅度",
+    mistakes: "切勿拱背低头使劲压，保持背部平直。",
+    alternatives: ["坐姿体前屈"]
+  },
+  "坐姿臀肌深度拉伸": {
+    emoji: "🧘",
+    target: "臀大肌 · 臀中肌 · 梨状肌放松",
+    detail: "左右各 40 秒",
+    weight: "自重徒手",
+    gif: "1424-DeDThfG.gif",
+    tips: "坐于垫上呈翘二郎腿姿态（脚踝搁在另一腿膝盖上），双手抱住大腿后侧贴向胸口，感受臀部深层酸胀舒展。",
+    breathing: "平稳深呼吸，闭目感受骨盆压力释放",
+    mistakes: "保持颈椎放松，不要耸肩憋力。",
+    alternatives: ["鸽子式拉伸"]
+  }
+};
+
+/* ================== 周计划排期与多方案变体 ================== */
+const WORKOUT_PLANS = {
+  "周一": {
+    title: "下肢力量塑型",
+    variants: [
+      { id: "A1", name: "A1: 复合塑形 (深蹲硬拉)", list: ["高脚杯深蹲", "罗马尼亚硬拉", "负重臀桥", "哑铃箭步蹲", "保加利亚分腿蹲", "平板支撑"] },
+      { id: "A2", name: "A2: 蜜桃臀专注 (臀腿雕刻)", list: ["哑铃双腿深蹲", "罗马尼亚硬拉", "负重臀桥", "保加利亚分腿蹲", "死虫式", "平板支撑"] }
+    ],
+    type: "s"
+  },
+  "周二": {
+    title: "动感单车 · 稳定燃脂",
+    desc: "🚴 动感单车 35 分钟：强度保持在【能说话但微喘】最佳燃脂区间 (心率 60%-70%)",
+    type: "c"
+  },
+  "周三": {
+    title: "周中休息日 · 散步与拉伸",
+    variants: [
+      { id: "R1", name: "全身深度柔韧拉伸跟练", list: ["股四头肌侧卧拉伸", "腘绳肌柔韧拉伸", "坐姿臀肌深度拉伸", "死虫式"] }
+    ],
+    type: "r"
+  },
+  "周四": {
+    title: "上肢力量塑型",
+    variants: [
+      { id: "B1", name: "B1: 紧致胸背肩 (改善体态)", list: ["哑铃卧推", "单臂哑铃划船", "坐姿哑铃推举", "哑铃侧平举", "哑铃二头弯举", "跪姿俯卧撑"] },
+      { id: "B2", name: "B2: 天鹅臂直角肩 (消除副乳)", list: ["跪姿俯卧撑", "单臂哑铃划船", "哑铃侧平举", "哑铃俯身后臂屈伸", "哑铃二头弯举", "死虫式"] }
+    ],
+    type: "s"
+  },
+  "周五": {
+    title: "动感单车 · 极速间歇",
+    desc: "🚴 动感单车 HIIT 约 30 分钟：热身 5min + 6-8 轮（高阻冲刺 1min + 轻松恢复 2min）+ 放松 5min",
+    type: "c"
+  },
+  "周六": {
+    title: "动感单车 · 稳定燃脂",
+    desc: "🚴 动感单车 35-40 分钟：匀速踩踏，高效消耗糖原并促进脂肪氧化",
+    type: "c"
+  },
+  "周日": {
+    title: "动感单车 · 音乐轻踩恢复",
+    desc: "🚴 动感单车 30 分钟：听轻快音乐慢速踩踏，促进乳酸代谢，活力满满迎接下周！",
+    type: "c"
+  }
 };
 
 /* ================== 超丰富多变菜谱库 (支持各餐独立随机与换一道) ================== */
@@ -1227,9 +1743,7 @@ const RECIPES_POOL = {
     { name: "泰式罗勒酸辣鸡肉碎", emoji: "🍲", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.95)}g</strong> + 鸡胸肉碎 <strong>${Math.round(p * 1.43)}g</strong> + 四季豆/甜椒丁 <strong>250g</strong> + 油 5g` },
     { name: "鲜香菇炒牛里脊片", emoji: "🥩", calc: (c, p, f) => `紫米饭 <strong>${Math.round(c * 0.95)}g</strong> + 鲜香菇炒牛肉片 <strong>${Math.round(p * 1.15)}g</strong> + 白灼芦笋 <strong>250g</strong> + 油 5g` },
     { name: "意式番茄肉酱荞麦面", emoji: "🍝", calc: (c, p, f) => `荞麦面干重 <strong>${Math.round(c * 0.48)}g</strong> + 瘦牛肉末番茄酱 <strong>${Math.round(p * 1.20)}g</strong> + 口蘑西兰花 <strong>250g</strong> + 油 4g` },
-    { name: "柠檬香草烤三文鱼", emoji: "🐟", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.90)}g</strong> + 烤三文鱼排 <strong>${Math.round(p * 1.35)}g</strong> + 烤芦笋圣女果 <strong>250g</strong> + 油 4g` },
-    { name: "干贝虾仁炒丝瓜清甜饭", emoji: "🍤", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.95)}g</strong> + 鲜基围虾仁/干贝 <strong>${Math.round(p * 1.45)}g</strong> + 鲜甜丝瓜 <strong>250g</strong> + 油 4g` },
-    { name: "韩式无油泡菜鸡胸拌饭", emoji: "🍚", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.95)}g</strong> + 手撕鸡胸丝 <strong>${Math.round(p * 1.43)}g</strong> + 泡菜豆芽菠菜 <strong>250g</strong> + 煎蛋1个` }
+    { name: "柠檬香草烤三文鱼", emoji: "🐟", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.90)}g</strong> + 烤三文鱼排 <strong>${Math.round(p * 1.35)}g</strong> + 烤芦笋圣女果 <strong>250g</strong> + 油 4g` }
   ],
   snack: [
     { name: "脆苹果浓稠酸奶", emoji: "🍎", calc: (c, p, f) => `脆甜苹果 <strong>1个</strong>（约一拳）+ 无糖浓稠酸奶 <strong>80g</strong>` },
@@ -1240,8 +1754,7 @@ const RECIPES_POOL = {
     { name: "甜橙轻酸奶加餐", emoji: "🍊", calc: (c, p, f) => `多汁甜橙 <strong>1个</strong> + 原味无糖酸奶 <strong>80g</strong>` },
     { name: "即食低脂鸡肉肠黑咖", emoji: "🌭", calc: (c, p, f) => `无淀粉低脂鸡胸肉肠 <strong>1根</strong>（约50g）+ 美式冰黑咖啡 1杯` },
     { name: "红心西柚开心果", emoji: "🍊", calc: (c, p, f) => `红心西柚 <strong>半个</strong>（约150g）+ 原味开心果 <strong>8g</strong>` },
-    { name: "清爽黄瓜条配无糖酸奶", emoji: "🥒", calc: (c, p, f) => `脆黄瓜条 <strong>1根</strong> + 浓稠希腊酸奶 <strong>100g</strong>（蘸食绝配）` },
-    { name: "新鲜大樱桃/车厘子", emoji: "🍒", calc: (c, p, f) => `大樱桃 <strong>12-15颗</strong>（约130g）+ 原味坚果 <strong>8g</strong>` }
+    { name: "清爽黄瓜条配无糖酸奶", emoji: "🥒", calc: (c, p, f) => `脆黄瓜条 <strong>1根</strong> + 浓稠希腊酸奶 <strong>100g</strong>（蘸食绝配）` }
   ],
   dinner: [
     { name: "鲜虾时蔬嫩豆腐煲", emoji: "🍤", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 白灼基围虾/虾仁 <strong>${Math.round(p * 1.43)}g</strong> + 嫩豆腐 <strong>120g</strong> + 绿叶菜 <strong>250g</strong> + 油 4g` },
@@ -1253,31 +1766,16 @@ const RECIPES_POOL = {
     { name: "香甜板栗南瓜鸡腿", emoji: "🎃", calc: (c, p, f) => `蒸板栗南瓜/红薯 <strong>${Math.round(c * 1.20)}g</strong> + 嫩煎去皮鸡腿肉 <strong>${Math.round(p * 1.25)}g</strong> + 清炒时蔬 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
     { name: "鲜菌菇老豆腐虾仁汤", emoji: "🍲", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.83)}g</strong> + 鲜虾仁 <strong>${Math.round(p * 1.20)}g</strong> + 老豆腐 <strong>120g</strong> + 鲜口蘑平菇 <strong>250g</strong> + 油 4g` },
     { name: "手工鸡胸肉丸蔬菜煲", emoji: "🍲", calc: (c, p, f) => `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong> + 手工鸡肉丸 <strong>${Math.round(p * 1.40)}g</strong> + 冬瓜菠菜大叶菜 <strong>300g</strong> + 油 4g` },
-    { name: "清蒸生蚝鲜贝拼盘", emoji: "🦪", calc: (c, p, f) => `甜玉米 <strong>${Math.round(c * 1.20)}g</strong> + 鲜蛤贝类/生蚝肉 <strong>${Math.round(p * 1.50)}g</strong> + 白灼西兰花 <strong>250g</strong> + 油 4g` },
     { name: "黑椒老豆腐瘦牛排", emoji: "🥩", calc: (c, p, f) => `糙米饭 <strong>${Math.round(c * 0.83)}g</strong> + 瘦牛肉片 <strong>${Math.round(p * 1.15)}g</strong> + 煎老豆腐 <strong>120g</strong> + 罗马生菜 <strong>250g</strong> + 油 4g` },
-    { name: "慢烤三文鱼时蔬拼盘", emoji: "🐟", calc: (c, p, f) => `紫薯 <strong>${Math.round(c * 1.18)}g</strong> + 三文鱼排 <strong>${Math.round(p * 1.30)}g</strong> + 烤南瓜芦笋小番茄 <strong>250g</strong> + 油 3g` },
-    { name: "番茄浓汤大虾魔芋锅", emoji: "🍲", calc: (c, p, f) => `玉米 <strong>${Math.round(c * 1.20)}g</strong> + 鲜大虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 番茄浓汤煮白菜木耳 <strong>300g</strong> + 豆腐 <strong>100g</strong>` },
-    { name: "荷兰豆木耳炒鸡胸", emoji: "🍗", calc: (c, p, f) => `杂粮饭 <strong>${Math.round(c * 0.83)}g</strong> + 鸡胸肉片 <strong>${Math.round(p * 1.35)}g</strong> + 荷兰豆黑木耳 <strong>250g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
-    { name: "干贝鲜虾冬瓜清肠煲", emoji: "🥣", calc: (c, p, f) => `蒸红薯 <strong>${Math.round(c * 1.18)}g</strong> + 干贝虾仁 <strong>${Math.round(p * 1.45)}g</strong> + 炖冬瓜海带 <strong>300g</strong> + 豆腐 <strong>100g</strong> + 油 4g` },
-    { name: "上汤菠菜瘦里脊肉片", emoji: "🍲", calc: (c, p, f) => `米饭 <strong>${Math.round(c * 0.83)}g</strong> + 瘦猪里脊肉片 <strong>${Math.round(p * 1.20)}g</strong> + 嫩豆腐 <strong>100g</strong> + 蒜香菠菜 <strong>300g</strong> + 油 4g` }
+    { name: "慢烤三文鱼时蔬拼盘", emoji: "🐟", calc: (c, p, f) => `紫薯 <strong>${Math.round(c * 1.18)}g</strong> + 三文鱼排 <strong>${Math.round(p * 1.30)}g</strong> + 烤南瓜芦笋小番茄 <strong>250g</strong> + 油 3g` }
   ]
 };
-
-/* 周计划安排：周三设为周中休息日，周日转为单车稳态有氧（3天训练+1天休息+3天训练循环） */
-const WEEK_PLAN = [
-  { day: "周一", type: "s", title: "下肢力量 A" },
-  { day: "周二", type: "c", title: "动感单车 · 稳定" },
-  { day: "周三", type: "r", title: "休息日：散步 20-30 分钟 + 全身拉伸" },
-  { day: "周四", type: "s", title: "上肢力量 B" },
-  { day: "周五", type: "c", title: "动感单车 · 间歇" },
-  { day: "周六", type: "c", title: "动感单车 · 稳定" },
-  { day: "周日", type: "c", title: "动感单车 · 稳定" }
-];
 
 /* ================== 状态管理 ================== */
 let app = {
   currentDate: fmtDate(new Date()),
   weight: 55.0,
+  workoutViewMode: "compact", // "compact" or "cards"
   config: {
     height: 164,
     age: 29,
@@ -1285,8 +1783,10 @@ let app = {
     periodBaseline: "2026-08-18",
     cycleLen: 28
   },
-  logs: {} // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, meals: {}, mealChoices: {}, notes: {} } }
+  logs: {} // 格式: { "YYYY-MM-DD": { weight, water, exercises: {}, exerciseSwaps: {}, planVariant: "A1", meals: {}, mealChoices: {}, notes: {} } }
 };
+
+let currentModalExKey = null;
 
 function loadLocalData() {
   try {
@@ -1311,15 +1811,18 @@ function getDayLog(dateStr) {
       water: 0,
       exercises: {},
       exerciseNotes: {},
+      exerciseSwaps: {},
+      planVariant: null,
       meals: {},
       mealChoices: {}
     };
   }
+  if (!app.logs[dateStr].exerciseSwaps) app.logs[dateStr].exerciseSwaps = {};
   if (!app.logs[dateStr].mealChoices) app.logs[dateStr].mealChoices = {};
   return app.logs[dateStr];
 }
 
-/* ================== 日期与计算函数 ================== */
+/* ================== 日期与周期计算 ================== */
 function fmtDate(d) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
@@ -1327,16 +1830,10 @@ function parseDate(s) {
   const parts = s.split("-").map(Number);
   return new Date(parts[0], parts[1] - 1, parts[2]);
 }
-function addDays(d, n) {
-  const x = new Date(d);
-  x.setDate(x.getDate() + n);
-  return x;
-}
 function diffDays(aStr, bStr) {
   return Math.round((parseDate(aStr) - parseDate(bStr)) / DAY_MS);
 }
 
-// 生理周期计算
 function getCycleInfo(dateStr) {
   const d = parseDate(dateStr);
   const base = parseDate(app.config.periodBaseline);
@@ -1350,7 +1847,6 @@ function getCycleInfo(dateStr) {
   return { day, phase };
 }
 
-// 宏量营养素计算 (联动体重与周期)
 function calcMacros(weight, dayIndex, cycle) {
   const p = Math.round(weight * 1.8);
   const f = Math.round(weight * 0.9);
@@ -1375,7 +1871,7 @@ function calcMacros(weight, dayIndex, cycle) {
   return { p, f, c, kcal, carbDesc, kcalDesc };
 }
 
-/* ================== 音频提示音 (Web Audio API 原生合成) ================== */
+/* ================== 音频提示音 ================== */
 function playBeep(freq = 780, duration = 0.18, type = "sine") {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1399,7 +1895,7 @@ function playCheerTone() {
   if (navigator.vibrate) navigator.vibrate([80, 50, 120]);
 }
 
-/* ================== 页面渲染逻辑 ================== */
+/* ================== 页面整体渲染 ================== */
 function renderAll() {
   const curDate = app.currentDate;
   const dayLog = getDayLog(curDate);
@@ -1416,13 +1912,10 @@ function renderAll() {
   document.getElementById("lblCyclePhase").textContent = 
     (cycle.phase === "经期" ? "🩸 " : cycle.phase === "卵泡期" ? "🌿 " : cycle.phase === "排卵期" ? "🌸 " : "🍂 ") + cycle.phase;
   document.getElementById("lblCycleDay").textContent = "D" + cycle.day;
-  if (cycle.phase === "经期") {
-    cycleBtn.classList.add("period");
-  } else {
-    cycleBtn.classList.remove("period");
-  }
+  if (cycle.phase === "经期") cycleBtn.classList.add("period");
+  else cycleBtn.classList.remove("period");
 
-  // 3. 体重与营养素 (输入框聚焦中不强行覆盖输入)
+  // 3. 体重与营养素
   const inpWEl = document.getElementById("inpWeight");
   if (document.activeElement !== inpWEl) {
     inpWEl.value = curWeight.toFixed(1);
@@ -1439,10 +1932,10 @@ function renderAll() {
   // 4. 喝水打卡
   renderWater(dayLog.water || 0);
 
-  // 5. 训练动作列表与专属间歇按钮联动
+  // 5. 训练动作列表、动图展示与专属助手
   renderTraining(curDate, cycle, dayLog);
 
-  // 6. 三餐列表（随体重与宏量营养素实时联动克数，支持自由换一道与随机）
+  // 6. 三餐列表
   renderMeals(dayIdx, dayLog, macros);
 
   // 7. 设置项反显
@@ -1460,17 +1953,14 @@ function renderWater(val) {
   document.getElementById("lblWaterVal").textContent = val;
   const cupsContainer = document.getElementById("waterCups");
   cupsContainer.innerHTML = "";
-  const totalCups = 8; // 8 * 250ml = 2000ml
+  const totalCups = 8;
   const filledCount = Math.floor(val / 250);
 
   for (let i = 0; i < totalCups; i++) {
     const btn = document.createElement("button");
     btn.className = "water-cup-btn" + (i < filledCount ? " filled" : "");
     btn.innerHTML = `<span>💧</span><span style="font-size:9px;">${(i + 1) * 250}</span>`;
-    btn.onclick = () => {
-      const newWater = (i + 1) * 250;
-      updateWater(newWater);
-    };
+    btn.onclick = () => updateWater((i + 1) * 250);
     cupsContainer.appendChild(btn);
   }
 }
@@ -1483,92 +1973,179 @@ function updateWater(newVal) {
   if (dayLog.water >= 2000) playCheerTone();
 }
 
-/* ================== 训练模块 ================== */
+/* ================== 训练模块（含动图、视频、多变体与替换） ================== */
+const WEEKDAY_NAMES = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+
 function renderTraining(dateStr, cycle, dayLog) {
   const d = parseDate(dateStr);
-  const weekDayIdx = (d.getDay() + 6) % 7;
-  const plan = WEEK_PLAN[weekDayIdx];
+  const weekdayName = WEEKDAY_NAMES[d.getDay()];
+  const dayPlan = WORKOUT_PLANS[weekdayName] || WORKOUT_PLANS["周一"];
   const listEl = document.getElementById("exerciseList");
+  const variantBar = document.getElementById("planVariantBar");
   const actionRow = document.getElementById("trainingActionRow");
   listEl.innerHTML = "";
+  variantBar.innerHTML = "";
 
+  // 视图模式按钮状态
+  document.getElementById("btnViewCompact").classList.toggle("active", app.workoutViewMode === "compact");
+  document.getElementById("btnViewCards").classList.toggle("active", app.workoutViewMode === "cards");
+
+  // 经期模式
   if (cycle.phase === "经期") {
     document.getElementById("lblWorkoutTitle").textContent = "经期轻活动模式";
     document.getElementById("lblWorkoutDoneBadge").textContent = "温和恢复";
     listEl.innerHTML = `
-      <div style="background:var(--accent-amber-bg); color:var(--accent-amber); padding:12px; border-radius:12px; font-size:13.5px; line-height:1.5;">
-        🩸 <strong>经期专属建议：</strong> 暂停高强度力量训练，以散步 20-30 分钟、全身拉伸或动感单车 20 分钟慢速踩踏为主，放松骨盆与下背部。
+      <div style="background:var(--accent-amber-bg); color:var(--accent-amber); padding:14px; border-radius:14px; font-size:13.5px; line-height:1.6;">
+        🩸 <strong>经期专属恢复建议：</strong> 暂停高强度负重与剧烈间歇，以散步 20-30 分钟、骨盆柔韧拉伸或动感单车 20 分钟慢速踩踏为主，温和舒缓骨盆与下背部。
       </div>
     `;
     if (actionRow) actionRow.innerHTML = "";
     return;
   }
 
-  if (plan.type === "r") {
-    document.getElementById("lblWorkoutTitle").textContent = plan.title;
-    document.getElementById("lblWorkoutDoneBadge").textContent = "全身放松";
+  // 单车有氧日（周二/周五/周六/周日）
+  if (dayPlan.type === "c") {
+    document.getElementById("lblWorkoutTitle").textContent = dayPlan.title;
+    document.getElementById("lblWorkoutDoneBadge").textContent = "燃脂有氧";
     listEl.innerHTML = `
-      <div style="background:var(--accent-green-bg); color:var(--accent-green); padding:12px; border-radius:12px; font-size:13.5px; line-height:1.6;">
-        🌿 <strong>今日周中休息日：</strong> 建议户外快步散步 20-30 分钟 + 全身柔韧拉伸，充分缓解上半周疲劳，帮助肌肉超量恢复！
+      <div style="background:#F0F9FF; border:1px solid #BAE6FD; color:#0369A1; padding:14px; border-radius:14px; font-size:13.5px; line-height:1.6;">
+        ${dayPlan.desc}
       </div>
     `;
-    if (actionRow) actionRow.innerHTML = "";
+
+    if (actionRow) {
+      if (weekdayName === "周五") {
+        actionRow.innerHTML = `
+          <button class="action-btn btn-amber-action" id="btnGoHiitTimer">🚴 启动动感单车间歇 (HIIT) 专用助手</button>
+        `;
+        document.getElementById("btnGoHiitTimer").onclick = () => {
+          document.querySelector('.nav-item[data-tab="tab2"]').click();
+          const el = document.getElementById("cardHiitTimer");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        };
+      } else {
+        actionRow.innerHTML = `
+          <button class="action-btn btn-primary-action" id="btnGoSteadyCycleTimer">⏱️ 前往计时器记录单车时长</button>
+        `;
+        document.getElementById("btnGoSteadyCycleTimer").onclick = () => {
+          document.querySelector('.nav-item[data-tab="tab2"]').click();
+        };
+      }
+    }
     return;
   }
 
-  document.getElementById("lblWorkoutTitle").textContent = plan.title;
-  const exercises = EXERCISES_DB[plan.title] || [];
+  // 力量日 (周一/周四) 或 休息日跟练拉伸 (周三)
+  document.getElementById("lblWorkoutTitle").textContent = dayPlan.title;
+
+  // 渲染方案变体切换芯片（例如 A1 复合塑形 / A2 蜜桃臀专注）
+  const variants = dayPlan.variants || [];
+  if (variants.length > 1) {
+    if (!dayLog.planVariant) dayLog.planVariant = variants[0].id;
+    variants.forEach(v => {
+      const chip = document.createElement("button");
+      chip.className = "variant-chip" + (dayLog.planVariant === v.id ? " active" : "");
+      chip.textContent = v.name;
+      chip.onclick = () => {
+        dayLog.planVariant = v.id;
+        saveLocalData();
+        playBeep(650, 0.08);
+        renderTraining(dateStr, cycle, dayLog);
+      };
+      variantBar.appendChild(chip);
+    });
+  }
+
+  // 获取当前选定方案的动作列表
+  const curVariant = variants.find(v => v.id === dayLog.planVariant) || variants[0] || { list: [] };
+  const rawList = curVariant.list || [];
+
   let doneCount = 0;
 
-  exercises.forEach((ex, idx) => {
-    const isDone = !!dayLog.exercises[ex.name];
+  rawList.forEach((defaultName, idx) => {
+    // 检查是否有自定义替换动作
+    const activeName = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[defaultName]) || defaultName;
+    const exData = EXERCISE_LIBRARY[activeName] || {
+      emoji: "🏋️", target: "综合肌群", detail: "3 × 12", weight: "自重或轻哑铃",
+      gif: "1760-yn8yg1r.gif", tips: "保持核心收紧，动作平稳。",
+      breathing: "发力呼气，还原吸气", mistakes: "避免摇晃借力", alternatives: []
+    };
+
+    const isDone = !!dayLog.exercises[activeName];
     if (isDone) doneCount++;
-    const note = (dayLog.exerciseNotes && dayLog.exerciseNotes[ex.name]) || "";
+    const note = (dayLog.exerciseNotes && dayLog.exerciseNotes[activeName]) || "";
 
     const row = document.createElement("div");
     row.className = "exercise-item";
+
+    let inlineGifHtml = "";
+    if (app.workoutViewMode === "cards") {
+      inlineGifHtml = `
+        <div class="ex-inline-gif-box">
+          <img src="${GIF_CDN_BASE}${exData.gif}" loading="lazy" alt="${activeName}动图演示">
+        </div>
+      `;
+    }
+
     row.innerHTML = `
       <div class="check-circle ${isDone ? "checked" : ""}" data-idx="${idx}">✓</div>
       <div class="ex-main">
         <div class="ex-header-line">
-          <span class="ex-name">${ex.name}</span>
-          <span class="ex-set-meta">${ex.detail}</span>
+          <div class="ex-name-group">
+            <span class="ex-name">${exData.emoji} ${activeName}</span>
+            <span class="ex-target-pill">${exData.target}</span>
+          </div>
+          <span class="ex-set-meta">${exData.detail}</span>
         </div>
-        <div class="ex-weight-rec">💡 建议重量: ${ex.weight}</div>
-        <div class="ex-tips">${ex.tips}</div>
+        <div class="ex-weight-rec">💡 建议负重: ${exData.weight}</div>
+        
+        <!-- 操作按钮组：看动图演示 + 换动作 -->
+        <div class="ex-action-row">
+          <button class="btn-ex-demo" data-name="${activeName}">🎬 动作动图/要领</button>
+          <button class="btn-ex-swap" data-origin="${defaultName}" data-active="${activeName}">🔄 换动作</button>
+        </div>
+
+        ${inlineGifHtml}
+
+        <div class="ex-tips">${exData.tips}</div>
         <input type="text" class="ex-note-input" placeholder="记录今日实测重量/组数（如：8kg×15次）" value="${note}">
       </div>
     `;
 
     // 勾选打卡
     row.querySelector(".check-circle").onclick = () => {
-      dayLog.exercises[ex.name] = !dayLog.exercises[ex.name];
+      dayLog.exercises[activeName] = !dayLog.exercises[activeName];
       saveLocalData();
-      if (dayLog.exercises[ex.name]) playCheerTone();
+      if (dayLog.exercises[activeName]) playCheerTone();
       renderTraining(dateStr, cycle, dayLog);
+    };
+
+    // 查看动作演示弹窗
+    row.querySelector(".btn-ex-demo").onclick = () => openDemoModal(activeName, exData, defaultName);
+
+    // 替换动作
+    row.querySelector(".btn-ex-swap").onclick = (e) => {
+      e.stopPropagation();
+      swapExercise(defaultName, activeName, exData);
     };
 
     // 记录重量备注
     const inpNote = row.querySelector(".ex-note-input");
     inpNote.onchange = () => {
       if (!dayLog.exerciseNotes) dayLog.exerciseNotes = {};
-      dayLog.exerciseNotes[ex.name] = inpNote.value;
+      dayLog.exerciseNotes[activeName] = inpNote.value;
       saveLocalData();
     };
 
     listEl.appendChild(row);
   });
 
-  document.getElementById("lblWorkoutDoneBadge").textContent = `${doneCount}/${exercises.length} 完成`;
-  if (doneCount > 0 && doneCount === exercises.length) {
-    document.getElementById("lblWorkoutDoneBadge").style.color = "var(--accent-green)";
-  } else {
-    document.getElementById("lblWorkoutDoneBadge").style.color = "var(--text-muted)";
-  }
+  document.getElementById("lblWorkoutDoneBadge").textContent = `${doneCount}/${rawList.length} 完成`;
+  document.getElementById("lblWorkoutDoneBadge").style.color = (doneCount === rawList.length && doneCount > 0) ? "var(--accent-green)" : "var(--text-muted)";
 
   // 专属快捷助手按钮联动
   if (actionRow) {
-    if (plan.type === "s") {
+    if (dayPlan.type === "s") {
       actionRow.innerHTML = `
         <button class="action-btn btn-primary-action" id="btnGoRestTimer">⏱️ 开启力量组间休息计时器</button>
       `;
@@ -1577,18 +2154,55 @@ function renderTraining(dateStr, cycle, dayLog) {
         const el = document.getElementById("cardRestTimer");
         if (el) el.scrollIntoView({ behavior: "smooth" });
       };
-    } else if (plan.title === "动感单车 · 间歇") {
-      actionRow.innerHTML = `
-        <button class="action-btn btn-amber-action" id="btnGoHiitTimer">🚴 启动动感单车间歇 (HIIT) 助手</button>
-      `;
-      document.getElementById("btnGoHiitTimer").onclick = () => {
-        document.querySelector('.nav-item[data-tab="tab2"]').click();
-        const el = document.getElementById("cardHiitTimer");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      };
     } else {
       actionRow.innerHTML = "";
     }
+  }
+}
+
+/* ================== 动作演示与动图弹窗控制 ================== */
+const demoModal = document.getElementById("demoModal");
+
+function openDemoModal(name, exData, originKey) {
+  currentModalExKey = { name, originKey, exData };
+  document.getElementById("demoEmoji").textContent = exData.emoji;
+  document.getElementById("demoTitle").textContent = name + " · 动作标准演示";
+  document.getElementById("demoGif").src = GIF_CDN_BASE + exData.gif;
+  document.getElementById("demoTargetPill").textContent = "🎯 " + exData.target;
+  document.getElementById("demoSetsPill").textContent = exData.detail + " ｜ " + exData.weight;
+  document.getElementById("demoBreathing").textContent = exData.breathing || "呼吸平稳顺畅，发力呼气，还原吸气。";
+  document.getElementById("demoTips").textContent = exData.tips;
+  document.getElementById("demoMistakes").textContent = exData.mistakes || "避免借助身体剧烈晃动，注意力放在目标肌肉收缩上。";
+
+  demoModal.classList.add("open");
+  playBeep(700, 0.08);
+}
+
+function closeDemoModal() {
+  demoModal.classList.remove("open");
+  document.getElementById("demoGif").src = "";
+}
+
+function swapExercise(originKey, activeName, exData) {
+  const alts = exData.alternatives || [];
+  if (alts.length === 0) {
+    alert("当前动作为基础核心动作，已是最佳选择～");
+    return;
+  }
+  const pool = [originKey, ...alts];
+  const curIdx = pool.indexOf(activeName);
+  const nextName = pool[(curIdx + 1) % pool.length];
+
+  const dayLog = getDayLog(app.currentDate);
+  if (!dayLog.exerciseSwaps) dayLog.exerciseSwaps = {};
+  dayLog.exerciseSwaps[originKey] = nextName;
+  saveLocalData();
+  playBeep(780, 0.08);
+  renderTraining(app.currentDate, getCycleInfo(app.currentDate), dayLog);
+
+  // 若在弹窗中替换，同步刷新弹窗
+  if (demoModal.classList.contains("open") && EXERCISE_LIBRARY[nextName]) {
+    openDemoModal(nextName, EXERCISE_LIBRARY[nextName], originKey);
   }
 }
 
@@ -1604,7 +2218,6 @@ function renderMeals(dayIdx, dayLog, macros) {
   const d = parseDate(app.currentDate);
   const defaultBaseIdx = (d.getDay() + 6) % 7;
 
-  // 确保当天的各餐索引已初始化
   if (!dayLog.mealChoices) dayLog.mealChoices = {};
   MEAL_KEYS.forEach((m, idx) => {
     if (typeof dayLog.mealChoices[m.key] !== "number") {
@@ -1641,7 +2254,6 @@ function renderMeals(dayIdx, dayLog, macros) {
       </div>
     `;
 
-    // 勾选完成
     block.querySelector(".check-circle").onclick = () => {
       if (!dayLog.meals) dayLog.meals = {};
       dayLog.meals[m.title] = !dayLog.meals[m.title];
@@ -1650,7 +2262,6 @@ function renderMeals(dayIdx, dayLog, macros) {
       renderMeals(dayIdx, dayLog, macros);
     };
 
-    // 单餐换一换
     block.querySelector(".meal-swap-btn").onclick = (e) => {
       e.stopPropagation();
       dayLog.mealChoices[m.key] = (choiceIdx + 1 + Math.floor(Math.random() * 2)) % m.pool.length;
@@ -1669,7 +2280,6 @@ function renderMeals(dayIdx, dayLog, macros) {
   }
 }
 
-// 随机换一整套
 function randomizeAllMeals() {
   const dayLog = getDayLog(app.currentDate);
   if (!dayLog.mealChoices) dayLog.mealChoices = {};
@@ -1762,16 +2372,16 @@ function initRestTimer() {
 
 /* ================== 动感单车 HIIT 计时器 ================== */
 const HIIT_CONFIG = {
-  warmupSec: 300, // 5 min
-  sprintSec: 60,  // 1 min
-  recoverSec: 120, // 2 min
-  cooldownSec: 300, // 5 min
+  warmupSec: 300,
+  sprintSec: 60,
+  recoverSec: 120,
+  cooldownSec: 300,
   rounds: 6
 };
 
 let hiitState = {
   running: false,
-  phase: "warmup", // warmup -> sprint/recover (x6) -> cooldown -> done
+  phase: "warmup",
   currentRound: 1,
   remainSec: 300,
   timerId: null
@@ -1900,7 +2510,7 @@ function initHiitTimer() {
   renderHiitUI();
 }
 
-/* ================== 体重与腰围趋势图表 (Canvas 自绘制) ================== */
+/* ================== 体重与腰围趋势图表 ================== */
 function renderChartAndHistory() {
   const canvas = document.getElementById("weightChart");
   if (!canvas) return;
@@ -1914,7 +2524,6 @@ function renderChartAndHistory() {
   const w = rect.width;
   const h = rect.height;
 
-  // 整理历史记录
   const dates = Object.keys(app.logs).sort();
   const points = [];
   dates.forEach(d => {
@@ -1928,7 +2537,6 @@ function renderChartAndHistory() {
     points.push({ date: app.config.startDate, weight: app.weight });
   }
 
-  // 计算 7 天滑动平均
   const avgPoints = [];
   for (let i = 0; i < points.length; i++) {
     const start = Math.max(0, i - 6);
@@ -1941,7 +2549,6 @@ function renderChartAndHistory() {
   document.getElementById("statStartW").textContent = (points[0].weight || 58).toFixed(1) + " kg";
   document.getElementById("statAvgW").textContent = latestAvg.toFixed(1) + " kg";
 
-  // 坐标范围
   const allWeights = points.map(p => p.weight).concat(53.5);
   const minW = Math.floor(Math.min(...allWeights) - 0.5);
   const maxW = Math.ceil(Math.max(...allWeights) + 0.5);
@@ -1956,7 +2563,6 @@ function renderChartAndHistory() {
 
   ctx.clearRect(0, 0, w, h);
 
-  // 背景网格线
   ctx.strokeStyle = "#F1E8DF";
   ctx.lineWidth = 1;
   ctx.fillStyle = "#A89E91";
@@ -1982,7 +2588,6 @@ function renderChartAndHistory() {
     return padTop + chartH - ((weight - minW) / (maxW - minW)) * chartH;
   }
 
-  // 目标参考虚线 (53.5kg)
   const targetY = getY(53.5);
   if (targetY >= padTop && targetY <= padTop + chartH) {
     ctx.save();
@@ -1998,7 +2603,6 @@ function renderChartAndHistory() {
     ctx.restore();
   }
 
-  // 绘制单日点线
   ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -2019,7 +2623,6 @@ function renderChartAndHistory() {
     ctx.fill();
   });
 
-  // 绘制 7 天均线 (平滑主线)
   ctx.strokeStyle = "#10B981";
   ctx.lineWidth = 2.5;
   ctx.beginPath();
@@ -2031,7 +2634,6 @@ function renderChartAndHistory() {
   });
   ctx.stroke();
 
-  // X 轴日期标注
   ctx.fillStyle = "#A89E91";
   ctx.textAlign = "center";
   if (points.length > 0) {
@@ -2041,7 +2643,6 @@ function renderChartAndHistory() {
     }
   }
 
-  // 渲染历史记录列表
   const histEl = document.getElementById("historyList");
   histEl.innerHTML = "";
   const revPoints = [...points].reverse();
@@ -2062,7 +2663,7 @@ function renderChartAndHistory() {
   });
 }
 
-/* ================== 云端同步与实时拉取 ================== */
+/* ================== 云端同步与拉取 ================== */
 let syncTimer = null;
 let syncResetTimer = null;
 function setSyncStatus(text, ok, isSyncing = false) {
@@ -2126,7 +2727,6 @@ async function pullCloudWeight() {
   setSyncStatus("已就绪", true);
 }
 
-// 唤醒与返回前台时的自愈检测
 function checkResume() {
   const todayStr = fmtDate(new Date());
   if (app.currentDate !== todayStr) {
@@ -2138,16 +2738,52 @@ function checkResume() {
 
 /* ================== 页面事件监听与绑定 ================== */
 function initEvents() {
-  // 点击顶部同步胶囊手动刷新
   document.getElementById("syncPill").onclick = () => {
     pullCloudWeight();
     playBeep(650, 0.08);
   };
 
+  // 训练视图模式切换
+  document.getElementById("btnViewCompact").onclick = () => {
+    app.workoutViewMode = "compact";
+    saveLocalData();
+    renderTraining(app.currentDate, getCycleInfo(app.currentDate), getDayLog(app.currentDate));
+  };
+  document.getElementById("btnViewCards").onclick = () => {
+    app.workoutViewMode = "cards";
+    saveLocalData();
+    renderTraining(app.currentDate, getCycleInfo(app.currentDate), getDayLog(app.currentDate));
+  };
+
+  // 动作弹窗关闭
+  document.getElementById("btnDemoClose").onclick = closeDemoModal;
+  document.getElementById("demoModal").onclick = (e) => {
+    if (e.target === document.getElementById("demoModal")) closeDemoModal();
+  };
+
+  // 弹窗内的替换动作
+  document.getElementById("btnModalSwapEx").onclick = () => {
+    if (currentModalExKey) {
+      swapExercise(currentModalExKey.originKey, currentModalExKey.name, currentModalExKey.exData);
+    }
+  };
+
+  // 弹窗内一键打卡
+  document.getElementById("btnDemoConfirmDone").onclick = () => {
+    if (currentModalExKey) {
+      const dayLog = getDayLog(app.currentDate);
+      dayLog.exercises[currentModalExKey.name] = true;
+      saveLocalData();
+      playCheerTone();
+      closeDemoModal();
+      renderTraining(app.currentDate, getCycleInfo(app.currentDate), dayLog);
+    }
+  };
+
   // 随机换一套菜谱
   document.getElementById("btnRandomAllMeals").onclick = randomizeAllMeals;
 
-  // Tab 切换
+  // Tab 导航
   document.querySelectorAll(".nav-item").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
@@ -2170,7 +2806,7 @@ function initEvents() {
     renderAll();
   };
 
-  // 体重步进与输入（直接联动营养素与所有食物克数）
+  // 体重步进与输入
   function onWeightChange(newVal, sync = true) {
     const w = Math.max(30, Math.min(150, Number(newVal.toFixed(1))));
     app.weight = w;
@@ -2248,7 +2884,6 @@ function initEvents() {
     };
   });
 
-  // 页面生命周期监听（主屏幕 App 切换回前台时自动刷新）
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") checkResume();
   });
