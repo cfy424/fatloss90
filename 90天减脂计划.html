@@ -548,20 +548,255 @@ body {
 }
 .btn-ex-swap:active { background: #F5EEE6; }
 
-/* 动图直接展开卡片模式 */
-.ex-inline-gif-box {
-  margin-top: 8px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #EFE4D8;
-  background: #000;
-  max-width: 280px;
+/* 动作逐个跟练轮播卡片 (聚焦模式：高度仅约320px，拒绝长屏刷屏) */
+.ex-step-container {
+  background: linear-gradient(180deg, #FFFDFB 0%, #FFFFFF 100%);
+  border: 1px solid #F2E7DC;
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(180, 140, 110, 0.06);
 }
-.ex-inline-gif-box img {
+.ex-step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.ex-step-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ex-step-num {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: var(--text-main);
+}
+.ex-step-num strong {
+  color: var(--primary);
+  font-size: 15px;
+}
+.ex-step-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.step-dot {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: #E8DDD2;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.step-dot.active {
+  background: var(--primary);
+  transform: scale(1.35);
+  box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+.step-dot.done {
+  background: var(--accent-green);
+}
+.ex-step-nav-btns {
+  display: flex;
+  gap: 6px;
+}
+.step-nav-btn {
+  border: 1px solid #E2D6C8;
+  background: #FFF;
+  color: var(--text-main);
+  font-size: 11.5px;
+  font-weight: 750;
+  padding: 4px 9px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+.step-nav-btn:active { background: #F5EBE1; }
+.step-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #FAF6F0;
+}
+
+.ex-focus-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ex-focus-media {
   width: 100%;
-  height: auto;
+  background: #0F172A;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  max-height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+.ex-focus-gif {
+  width: 100%;
+  max-height: 210px;
+  object-fit: contain;
   display: block;
 }
+.ex-focus-target {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  color: #38BDF8;
+  font-size: 10.5px;
+  font-weight: 750;
+  padding: 3px 8px;
+  border-radius: 99px;
+}
+.ex-focus-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ex-focus-title-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ex-focus-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.ex-focus-meta {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: var(--primary-dark);
+}
+.ex-focus-cue {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.45;
+  background: #F9F5F0;
+  padding: 7px 11px;
+  border-radius: 10px;
+  border: 1px solid #EFE6DC;
+}
+.ex-focus-btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.btn-step-check {
+  flex: 1.8;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFF;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  box-shadow: 0 3px 8px rgba(16,185,129,0.25);
+  user-select: none;
+  transition: transform 0.1s;
+}
+.btn-step-check:active { transform: scale(0.98); }
+.btn-step-check.checked {
+  background: #E2E8F0;
+  color: #64748B;
+  box-shadow: none;
+}
+.btn-step-swap, .btn-step-detail {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: #FFF;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.btn-step-swap:active, .btn-step-detail:active { background: #F5EEE6; }
+
+/* 紧凑清单行样式（高度极简，一目了然） */
+.exercise-compact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F5EFEB;
+}
+.exercise-compact-item:last-child { border-bottom: none; }
+.ex-compact-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ex-compact-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+}
+.ex-compact-name {
+  font-size: 14.5px;
+  font-weight: 750;
+  color: var(--text-main);
+}
+.ex-compact-sets {
+  font-size: 12.5px;
+  font-weight: 750;
+  color: var(--primary);
+  white-space: nowrap;
+}
+.ex-compact-sub {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.ex-compact-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.btn-compact-demo {
+  border: 1px solid #FFD6D6;
+  background: #FFF5F5;
+  color: #E04D4D;
+  font-size: 11px;
+  font-weight: 750;
+  padding: 3px 8px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+.btn-compact-demo:active { transform: scale(0.95); background: #FFE6E6; }
+.btn-compact-swap {
+  border: 1px solid var(--card-border);
+  background: #FFFDF9;
+  color: var(--text-sub);
+  font-size: 10.5px;
+  padding: 3px 7px;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+}
+.btn-compact-swap:active { background: #F5EEE6; }
 
 .ex-tips { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
 .ex-note-input {
@@ -1182,7 +1417,7 @@ canvas#weightChart {
           <!-- 动图直显切换 -->
           <div class="workout-view-toggle">
             <button class="view-btn active" id="btnViewCompact" title="紧凑清单">📋 清单</button>
-            <button class="view-btn" id="btnViewCards" title="展示动图">🎬 动图</button>
+            <button class="view-btn" id="btnViewFocus" title="逐个跟练">🎬 逐个跟练</button>
           </div>
           <span class="card-status-badge" id="lblWorkoutDoneBadge">0/6 完成</span>
         </div>
@@ -1775,7 +2010,8 @@ const RECIPES_POOL = {
 let app = {
   currentDate: fmtDate(new Date()),
   weight: 55.0,
-  workoutViewMode: "compact", // "compact" or "cards"
+  workoutViewMode: "compact", // "compact" or "focus"
+  activeExStepIndex: 0,
   config: {
     height: 164,
     age: 29,
@@ -1988,7 +2224,7 @@ function renderTraining(dateStr, cycle, dayLog) {
 
   // 视图模式按钮状态
   document.getElementById("btnViewCompact").classList.toggle("active", app.workoutViewMode === "compact");
-  document.getElementById("btnViewCards").classList.toggle("active", app.workoutViewMode === "cards");
+  document.getElementById("btnViewFocus").classList.toggle("active", app.workoutViewMode === "focus");
 
   // 经期模式
   if (cycle.phase === "经期") {
@@ -2059,86 +2295,192 @@ function renderTraining(dateStr, cycle, dayLog) {
   // 获取当前选定方案的动作列表
   const curVariant = variants.find(v => v.id === dayLog.planVariant) || variants[0] || { list: [] };
   const rawList = curVariant.list || [];
+  const totalEx = rawList.length;
 
   let doneCount = 0;
+  rawList.forEach(name => {
+    const an = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[name]) || name;
+    if (dayLog.exercises[an]) doneCount++;
+  });
 
-  rawList.forEach((defaultName, idx) => {
-    // 检查是否有自定义替换动作
+  // A. 🎬 逐个跟练轮播卡片模式 (高度严格受控 ~320px，绝不刷屏，沉浸跟练)
+  if (app.workoutViewMode === "focus" && totalEx > 0) {
+    if (typeof app.activeExStepIndex !== "number" || app.activeExStepIndex >= totalEx || app.activeExStepIndex < 0) {
+      app.activeExStepIndex = 0;
+    }
+    const curStepIdx = app.activeExStepIndex;
+    const defaultName = rawList[curStepIdx];
     const activeName = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[defaultName]) || defaultName;
     const exData = EXERCISE_LIBRARY[activeName] || {
       emoji: "🏋️", target: "综合肌群", detail: "3 × 12", weight: "自重或轻哑铃",
       gif: "1760-yn8yg1r.gif", tips: "保持核心收紧，动作平稳。",
       breathing: "发力呼气，还原吸气", mistakes: "避免摇晃借力", alternatives: []
     };
-
     const isDone = !!dayLog.exercises[activeName];
-    if (isDone) doneCount++;
     const note = (dayLog.exerciseNotes && dayLog.exerciseNotes[activeName]) || "";
 
-    const row = document.createElement("div");
-    row.className = "exercise-item";
+    // 动作进度指示圆点
+    let dotsHtml = "";
+    rawList.forEach((name, i) => {
+      const an = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[name]) || name;
+      const dDone = !!dayLog.exercises[an];
+      const dActive = (i === curStepIdx);
+      dotsHtml += `<span class="step-dot ${dActive ? 'active' : ''} ${dDone ? 'done' : ''}" data-step="${i}" title="${name}"></span>`;
+    });
 
-    let inlineGifHtml = "";
-    if (app.workoutViewMode === "cards") {
-      inlineGifHtml = `
-        <div class="ex-inline-gif-box">
-          <img src="${GIF_CDN_BASE}${exData.gif}" loading="lazy" alt="${activeName}动图演示">
-        </div>
-      `;
-    }
-
-    row.innerHTML = `
-      <div class="check-circle ${isDone ? "checked" : ""}" data-idx="${idx}">✓</div>
-      <div class="ex-main">
-        <div class="ex-header-line">
-          <div class="ex-name-group">
-            <span class="ex-name">${exData.emoji} ${activeName}</span>
-            <span class="ex-target-pill">${exData.target}</span>
+    listEl.innerHTML = `
+      <div class="ex-step-container">
+        <div class="ex-step-header">
+          <div class="ex-step-progress">
+            <span class="ex-step-num">动作 <strong>${curStepIdx + 1}</strong> / ${totalEx}</span>
+            <div class="ex-step-dots">${dotsHtml}</div>
           </div>
-          <span class="ex-set-meta">${exData.detail}</span>
-        </div>
-        <div class="ex-weight-rec">💡 建议负重: ${exData.weight}</div>
-        
-        <!-- 操作按钮组：看动图演示 + 换动作 -->
-        <div class="ex-action-row">
-          <button class="btn-ex-demo" data-name="${activeName}">🎬 动作动图/要领</button>
-          <button class="btn-ex-swap" data-origin="${defaultName}" data-active="${activeName}">🔄 换动作</button>
+          <div class="ex-step-nav-btns">
+            <button class="step-nav-btn" id="btnPrevEx" ${curStepIdx === 0 ? 'disabled' : ''}>◀ 上一动</button>
+            <button class="step-nav-btn" id="btnNextEx" ${curStepIdx === totalEx - 1 ? 'disabled' : ''}>下一动 ▶</button>
+          </div>
         </div>
 
-        ${inlineGifHtml}
+        <div class="ex-focus-card">
+          <div class="ex-focus-media">
+            <img src="${GIF_CDN_BASE}${exData.gif}" class="ex-focus-gif" alt="${activeName}动图演示">
+            <span class="ex-focus-target">🎯 ${exData.target}</span>
+          </div>
 
-        <div class="ex-tips">${exData.tips}</div>
-        <input type="text" class="ex-note-input" placeholder="记录今日实测重量/组数（如：8kg×15次）" value="${note}">
+          <div class="ex-focus-info">
+            <div class="ex-focus-title-line">
+              <span class="ex-focus-name">${exData.emoji} ${activeName}</span>
+              <span class="ex-focus-meta">${exData.detail} ｜ 💡 ${exData.weight}</span>
+            </div>
+            <div class="ex-focus-cue">🌬️ ${exData.breathing || exData.tips}</div>
+
+            <div class="ex-focus-btn-row">
+              <button class="btn-step-check ${isDone ? 'checked' : ''}" id="btnFocusCheck">
+                ${isDone ? '✓ 已完成打卡' : '✓ 勾选完成并开始休息'}
+              </button>
+              <button class="btn-step-swap" id="btnFocusSwap">🔄 换动作</button>
+              <button class="btn-step-detail" id="btnFocusDetail">📖 动作要领</button>
+            </div>
+
+            <input type="text" class="ex-note-input" id="inpFocusNote" placeholder="记录今日实测重量/组数（如：8kg×15次）" value="${note}">
+          </div>
+        </div>
       </div>
     `;
 
-    // 勾选打卡
-    row.querySelector(".check-circle").onclick = () => {
+    // 绑定逐个跟练事件
+    const prevBtn = document.getElementById("btnPrevEx");
+    if (prevBtn) prevBtn.onclick = () => {
+      if (app.activeExStepIndex > 0) {
+        app.activeExStepIndex--;
+        saveLocalData();
+        playBeep(600, 0.06);
+        renderTraining(dateStr, cycle, dayLog);
+      }
+    };
+    const nextBtn = document.getElementById("btnNextEx");
+    if (nextBtn) nextBtn.onclick = () => {
+      if (app.activeExStepIndex < totalEx - 1) {
+        app.activeExStepIndex++;
+        saveLocalData();
+        playBeep(650, 0.06);
+        renderTraining(dateStr, cycle, dayLog);
+      }
+    };
+    // 点击圆点跳转对应动作
+    listEl.querySelectorAll(".step-dot").forEach(dot => {
+      dot.onclick = () => {
+        app.activeExStepIndex = Number(dot.dataset.step);
+        saveLocalData();
+        playBeep(650, 0.06);
+        renderTraining(dateStr, cycle, dayLog);
+      };
+    });
+
+    // 勾选打卡并自动前进
+    document.getElementById("btnFocusCheck").onclick = () => {
       dayLog.exercises[activeName] = !dayLog.exercises[activeName];
       saveLocalData();
-      if (dayLog.exercises[activeName]) playCheerTone();
+      if (dayLog.exercises[activeName]) {
+        playCheerTone();
+        // 自动寻找下一个未完成的动作
+        for (let nextI = 0; nextI < totalEx; nextI++) {
+          const checkIdx = (curStepIdx + 1 + nextI) % totalEx;
+          const nextDefName = rawList[checkIdx];
+          const nextActName = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[nextDefName]) || nextDefName;
+          if (!dayLog.exercises[nextActName]) {
+            app.activeExStepIndex = checkIdx;
+            break;
+          }
+        }
+      }
       renderTraining(dateStr, cycle, dayLog);
     };
 
-    // 查看动作演示弹窗
-    row.querySelector(".btn-ex-demo").onclick = () => openDemoModal(activeName, exData, defaultName);
+    document.getElementById("btnFocusSwap").onclick = () => swapExercise(defaultName, activeName, exData);
+    document.getElementById("btnFocusDetail").onclick = () => openDemoModal(activeName, exData, defaultName);
 
-    // 替换动作
-    row.querySelector(".btn-ex-swap").onclick = (e) => {
-      e.stopPropagation();
-      swapExercise(defaultName, activeName, exData);
-    };
+    const inpFocusNote = document.getElementById("inpFocusNote");
+    if (inpFocusNote) {
+      inpFocusNote.onchange = () => {
+        if (!dayLog.exerciseNotes) dayLog.exerciseNotes = {};
+        dayLog.exerciseNotes[activeName] = inpFocusNote.value;
+        saveLocalData();
+      };
+    }
+  } 
+  // B. 📋 精致紧凑清单模式 (整齐一览，不占垂直高度)
+  else {
+    rawList.forEach((defaultName, idx) => {
+      const activeName = (dayLog.exerciseSwaps && dayLog.exerciseSwaps[defaultName]) || defaultName;
+      const exData = EXERCISE_LIBRARY[activeName] || {
+        emoji: "🏋️", target: "综合肌群", detail: "3 × 12", weight: "自重或轻哑铃",
+        gif: "1760-yn8yg1r.gif", tips: "保持核心收紧，动作平稳。",
+        breathing: "发力呼气，还原吸气", mistakes: "避免摇晃借力", alternatives: []
+      };
 
-    // 记录重量备注
-    const inpNote = row.querySelector(".ex-note-input");
-    inpNote.onchange = () => {
-      if (!dayLog.exerciseNotes) dayLog.exerciseNotes = {};
-      dayLog.exerciseNotes[activeName] = inpNote.value;
-      saveLocalData();
-    };
+      const isDone = !!dayLog.exercises[activeName];
+      const note = (dayLog.exerciseNotes && dayLog.exerciseNotes[activeName]) || "";
 
-    listEl.appendChild(row);
-  });
+      const row = document.createElement("div");
+      row.className = "exercise-compact-item";
+      row.innerHTML = `
+        <div class="check-circle ${isDone ? "checked" : ""}" data-idx="${idx}">✓</div>
+        <div class="ex-compact-main">
+          <div class="ex-compact-top">
+            <span class="ex-compact-name">${exData.emoji} ${activeName}</span>
+            <span class="ex-compact-sets">${exData.detail}</span>
+          </div>
+          <div class="ex-compact-sub">
+            <span>🎯 ${exData.target} ｜ 💡 ${exData.weight}</span>
+          </div>
+        </div>
+        <div class="ex-compact-actions">
+          <button class="btn-compact-demo" data-name="${activeName}">🎬 演示</button>
+          <button class="btn-compact-swap" data-origin="${defaultName}" data-active="${activeName}">🔄</button>
+        </div>
+      `;
+
+      // 勾选打卡
+      row.querySelector(".check-circle").onclick = () => {
+        dayLog.exercises[activeName] = !dayLog.exercises[activeName];
+        saveLocalData();
+        if (dayLog.exercises[activeName]) playCheerTone();
+        renderTraining(dateStr, cycle, dayLog);
+      };
+
+      // 弹窗查看动图
+      row.querySelector(".btn-compact-demo").onclick = () => openDemoModal(activeName, exData, defaultName);
+
+      // 替换
+      row.querySelector(".btn-compact-swap").onclick = (e) => {
+        e.stopPropagation();
+        swapExercise(defaultName, activeName, exData);
+      };
+
+      listEl.appendChild(row);
+    });
+  }
 
   document.getElementById("lblWorkoutDoneBadge").textContent = `${doneCount}/${rawList.length} 完成`;
   document.getElementById("lblWorkoutDoneBadge").style.color = (doneCount === rawList.length && doneCount > 0) ? "var(--accent-green)" : "var(--text-muted)";
@@ -2749,8 +3091,8 @@ function initEvents() {
     saveLocalData();
     renderTraining(app.currentDate, getCycleInfo(app.currentDate), getDayLog(app.currentDate));
   };
-  document.getElementById("btnViewCards").onclick = () => {
-    app.workoutViewMode = "cards";
+  document.getElementById("btnViewFocus").onclick = () => {
+    app.workoutViewMode = "focus";
     saveLocalData();
     renderTraining(app.currentDate, getCycleInfo(app.currentDate), getDayLog(app.currentDate));
   };
