@@ -1619,14 +1619,17 @@ canvas#weightChart {
         <div class="stat-box">
           <div class="stat-label">初始体重</div>
           <div class="stat-val" id="statStartW">58.0 kg</div>
+          <div style="font-size:10px; color:var(--text-muted); margin-top:2px;" id="statTotalLoss">已累计减重</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">最新 7天均线</div>
           <div class="stat-val" id="statAvgW" style="color:var(--accent-green);">55.0 kg</div>
+          <div style="font-size:10px; color:var(--accent-green); margin-top:2px;">过滤水分波动</div>
         </div>
         <div class="stat-box">
           <div class="stat-label">阶段目标</div>
-          <div class="stat-val" style="color:var(--primary);">53.5 kg</div>
+          <div class="stat-val" id="statTargetW" style="color:var(--primary);">53.0 kg</div>
+          <div style="font-size:10px; color:var(--primary-dark); margin-top:2px;" id="statTargetRemain">距目标 2.0kg</div>
         </div>
       </div>
 
@@ -1674,6 +1677,14 @@ canvas#weightChart {
         </div>
       </div>
       <div class="settings-group">
+        <div class="setting-item">
+          <label>阶段目标体重 (kg)</label>
+          <input type="number" id="cfgTargetWeight" step="0.1" value="53.0">
+        </div>
+        <div class="setting-item">
+          <label>初始体重 (kg)</label>
+          <input type="number" id="cfgStartWeight" step="0.1" value="58.0">
+        </div>
         <div class="setting-item">
           <label>身高 (cm)</label>
           <input type="number" id="cfgHeight" value="164">
@@ -2132,6 +2143,8 @@ let app = {
   config: {
     height: 164,
     age: 29,
+    startWeight: 58.0,
+    targetWeight: 53.0,
     startDate: "2026-09-02",
     periodBaseline: "2026-08-18",
     cycleLen: 28
@@ -2293,6 +2306,10 @@ function renderAll() {
   renderMeals(dayIdx, dayLog, macros);
 
   // 7. 设置项反显
+  const cfgStartWEl = document.getElementById("cfgStartWeight");
+  if (cfgStartWEl) cfgStartWEl.value = (app.config.startWeight || 58.0).toFixed(1);
+  const cfgTargetWEl = document.getElementById("cfgTargetWeight");
+  if (cfgTargetWEl) cfgTargetWEl.value = (app.config.targetWeight || 53.0).toFixed(1);
   document.getElementById("cfgHeight").value = app.config.height;
   document.getElementById("cfgAge").value = app.config.age;
   document.getElementById("cfgCycleLen").value = app.config.cycleLen;
@@ -3150,10 +3167,27 @@ function renderChartAndHistory() {
   }
 
   const latestAvg = avgPoints[avgPoints.length - 1].weight;
-  document.getElementById("statStartW").textContent = (points[0].weight || 58).toFixed(1) + " kg";
-  document.getElementById("statAvgW").textContent = latestAvg.toFixed(1) + " kg";
+  const startW = Number(app.config.startWeight) || Number(points[0].weight) || 58.0;
+  const targetW = Number(app.config.targetWeight) || 53.0;
 
-  const allWeights = points.map(p => p.weight).concat(53.5);
+  document.getElementById("statStartW").textContent = startW.toFixed(1) + " kg";
+  document.getElementById("statAvgW").textContent = latestAvg.toFixed(1) + " kg";
+  const statTargetEl = document.getElementById("statTargetW");
+  if (statTargetEl) statTargetEl.textContent = targetW.toFixed(1) + " kg";
+
+  // 进度差额提示
+  const totalLost = startW - latestAvg;
+  const distToGoal = latestAvg - targetW;
+  const statLossEl = document.getElementById("statTotalLoss");
+  if (statLossEl) {
+    statLossEl.textContent = totalLost > 0 ? `已降 ${totalLost.toFixed(1)}kg ↓` : (totalLost < 0 ? `变动 +${(-totalLost).toFixed(1)}kg` : `起点`);
+  }
+  const statRemainEl = document.getElementById("statTargetRemain");
+  if (statRemainEl) {
+    statRemainEl.textContent = distToGoal > 0 ? `距目标 ${distToGoal.toFixed(1)}kg` : (distToGoal <= 0 ? `已达成目标 🎉` : ``);
+  }
+
+  const allWeights = points.map(p => p.weight).concat([startW, targetW]);
   const minW = Math.floor(Math.min(...allWeights) - 0.5);
   const maxW = Math.ceil(Math.max(...allWeights) + 0.5);
 
@@ -3192,18 +3226,18 @@ function renderChartAndHistory() {
     return padTop + chartH - ((weight - minW) / (maxW - minW)) * chartH;
   }
 
-  const targetY = getY(53.5);
+  const targetY = getY(targetW);
   if (targetY >= padTop && targetY <= padTop + chartH) {
     ctx.save();
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = "rgba(255, 107, 107, 0.6)";
+    ctx.strokeStyle = "rgba(255, 107, 107, 0.75)";
     ctx.beginPath();
     ctx.moveTo(padLeft, targetY);
     ctx.lineTo(w - padRight, targetY);
     ctx.stroke();
     ctx.fillStyle = "#FF6B6B";
     ctx.textAlign = "left";
-    ctx.fillText("目标 53.5kg", padLeft + 4, targetY - 4);
+    ctx.fillText(`目标 ${targetW.toFixed(1)}kg`, padLeft + 4, targetY - 4);
     ctx.restore();
   }
 
@@ -3475,8 +3509,12 @@ function initEvents() {
   };
 
   // 设置项保存
-  ["cfgHeight", "cfgAge", "cfgCycleLen", "cfgStartDate"].forEach(id => {
-    document.getElementById(id).onchange = () => {
+  ["cfgStartWeight", "cfgTargetWeight", "cfgHeight", "cfgAge", "cfgCycleLen", "cfgStartDate"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.onchange = () => {
+      app.config.startWeight = Number(document.getElementById("cfgStartWeight").value) || 58.0;
+      app.config.targetWeight = Number(document.getElementById("cfgTargetWeight").value) || 53.0;
       app.config.height = Number(document.getElementById("cfgHeight").value) || 164;
       app.config.age = Number(document.getElementById("cfgAge").value) || 29;
       app.config.cycleLen = Number(document.getElementById("cfgCycleLen").value) || 28;
